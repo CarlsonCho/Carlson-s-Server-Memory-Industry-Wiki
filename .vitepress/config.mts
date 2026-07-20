@@ -44,7 +44,7 @@ export default withMermaid(
             { text: 'MCRDIMM Overview', link: '/mcrdimm-overview' },
             { text: 'HBM Overview', link: '/hbm-overview' },
             { text: 'GDDR Overview', link: '/gddr-overview' },
-            { text: 'SOCAMM Overview', link: '/socamm-overview' },
+            { text: 'SOCAMM2 Overview', link: '/socamm2-overview' },
             { text: 'LPCAMM2 Overview', link: '/lpcamm-overview' },
             { text: 'CXL Overview', link: '/cxl-overview' },
             { text: 'NAND Overview', link: '/nand-overview' }
