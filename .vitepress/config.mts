@@ -6,6 +6,7 @@ export default withMermaid(
   defineConfig({
     title: "Carlson Wiki",
     description: "Carlson's AI server industry summary",
+    base: '/Carlson-s-Server-Memory-Industry-Wiki/',
     appearance: 'dark', // 기본 배경색을 다크모드로 설정 (사용자 토글 가능)
 
     themeConfig: {
