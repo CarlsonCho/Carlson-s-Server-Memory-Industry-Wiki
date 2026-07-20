@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🖥️ Registered DIMM (RDIMM) 구조 및 소자 구성 분석 | AI Server Wiki</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --bg-primary: #0b0f19;
+      --bg-secondary: #111827;
+      --bg-card: #1f2937;
+      --text-primary: #f9fafb;
+      --text-secondary: #9ca3af;
+      --text-muted: #6b7280;
+      --accent: #3b82f6;
+      --accent-hover: #60a5fa;
+      --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+      --border-color: #374151;
+      --code-bg: #111827;
+      --sidebar-width: 280px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.7;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Navigation */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: rgba(17, 24, 39, 0.8);
+      backdrop-filter: blur(12px);
+      border-right: 1px solid var(--border-color);
+      padding: 2rem 1.25rem;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      overflow-y: auto;
+      z-index: 10;
+    }
+
+    .brand {
+      font-size: 1.25rem;
+      font-weight: 700;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-group-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .nav-link:hover {
+      color: var(--text-primary);
+      background-color: rgba(59, 130, 246, 0.1);
+      transform: translateX(4px);
+    }
+
+    .nav-link.active {
+      color: #ffffff;
+      background: var(--accent-gradient);
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    /* Main Content */
+    .main-wrapper {
+      margin-left: var(--sidebar-width);
+      flex: 1;
+      padding: 3rem 4rem;
+      max-width: 1100px;
+    }
+
+    .content {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 3rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Typography & Elements */
+    h1, h2, h3, h4, h5, h6 {
+      color: var(--text-primary);
+      font-weight: 700;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      line-height: 1.3;
+    }
+
+    h1 {
+      font-size: 2.25rem;
+      margin-top: 0;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--border-color);
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    h2 {
+      font-size: 1.6rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    h3 { font-size: 1.25rem; }
+
+    p {
+      margin-bottom: 1.25rem;
+      color: #d1d5db;
+    }
+
+    a {
+      color: var(--accent-hover);
+      text-decoration: none;
+      transition: border-bottom 0.2s ease;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    ul, ol {
+      margin-bottom: 1.25rem;
+      padding-left: 1.5rem;
+      color: #d1d5db;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+
+    blockquote {
+      border-left: 4px solid var(--accent);
+      background: rgba(59, 130, 246, 0.05);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.25rem;
+      border-radius: 0 0.5rem 0.5rem 0;
+      color: #9ca3af;
+      font-style: italic;
+    }
+
+    code {
+      font-family: 'Fira Code', monospace;
+      background: var(--code-bg);
+      color: #f35b04;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.875em;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    pre {
+      background: var(--code-bg);
+      padding: 1.25rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border-color);
+    }
+
+    pre code {
+      background: transparent;
+      padding: 0;
+      border: none;
+      color: #e5e7eb;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.75rem;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border: 1px solid var(--border-color);
+    }
+
+    th {
+      background-color: var(--bg-card);
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    tr:nth-child(even) {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+
+    tr:hover {
+      background-color: rgba(59, 130, 246, 0.05);
+    }
+
+    hr {
+      border: 0;
+      height: 1px;
+      background: var(--border-color);
+      margin: 2rem 0;
+    }
+
+    /* Mermaid Container */
+    .mermaid {
+      background: #ffffff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    @media (max-width: 768px) {
+      body { flex-direction: column; }
+      .sidebar { width: 100%; position: relative; height: auto; }
+      .main-wrapper { margin-left: 0; padding: 1.5rem; }
+      .content { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="brand">⚡ AI Server Wiki</div>
+    <div class="nav-group-title">Documents</div>
+    <div class="nav-links">
+      <a href="ai-server-overview.html" class="nav-link ">AI SERVER OVERVIEW</a>
+<a href="amd-cpu-roadmap.html" class="nav-link ">AMD CPU ROADMAP</a>
+<a href="amd-roadmap.html" class="nav-link ">AMD ROADMAP</a>
+<a href="ampere-roadmap.html" class="nav-link ">AMPERE ROADMAP</a>
+<a href="api-examples.html" class="nav-link ">API EXAMPLES</a>
+<a href="aws-roadmap.html" class="nav-link ">AWS ROADMAP</a>
+<a href="cxl-overview.html" class="nav-link ">CXL OVERVIEW</a>
+<a href="dram-overview.html" class="nav-link ">DRAM OVERVIEW</a>
+<a href="gddr-overview.html" class="nav-link ">GDDR OVERVIEW</a>
+<a href="general-server-overview.html" class="nav-link ">GENERAL SERVER OVERVIEW</a>
+<a href="google-roadmap.html" class="nav-link ">GOOGLE ROADMAP</a>
+<a href="hbm-overview.html" class="nav-link ">HBM OVERVIEW</a>
+<a href="index.html" class="nav-link ">INDEX</a>
+<a href="intel-roadmap.html" class="nav-link ">INTEL ROADMAP</a>
+<a href="lpcamm-overview.html" class="nav-link ">LPCAMM OVERVIEW</a>
+<a href="markdown-examples.html" class="nav-link ">MARKDOWN EXAMPLES</a>
+<a href="mcrdimm-overview.html" class="nav-link ">MCRDIMM OVERVIEW</a>
+<a href="memory-overview.html" class="nav-link ">MEMORY OVERVIEW</a>
+<a href="nand-overview.html" class="nav-link ">NAND OVERVIEW</a>
+<a href="nvidia-blackwell.html" class="nav-link ">NVIDIA BLACKWELL</a>
+<a href="nvidia-hopper.html" class="nav-link ">NVIDIA HOPPER</a>
+<a href="nvidia-roadmap.html" class="nav-link ">NVIDIA ROADMAP</a>
+<a href="nvidia-rubin.html" class="nav-link ">NVIDIA RUBIN</a>
+<a href="rdimm-overview.html" class="nav-link active">RDIMM OVERVIEW</a>
+<a href="socamm-overview.html" class="nav-link ">SOCAMM OVERVIEW</a>
+<a href="step2-market.html" class="nav-link ">STEP2 MARKET</a>
+<a href="step3-roadmap.html" class="nav-link ">STEP3 ROADMAP</a>
+<a href="step4-teardown.html" class="nav-link ">STEP4 TEARDOWN</a>
+    </div>
+  </nav>
+
+  <main class="main-wrapper">
+    <article class="content">
+      <hr>
+<p>title: RDIMM Overview</p>
+<p>description: Rambus DDR5 Server DIMM Chipset 아키텍처 기반 DDR5 Registered DIMM(RDIMM) PCB 물리 구성도, 핵심 반도체 소자(RCD, PMIC, SPD Hub, TS) 및 신호/전력 시스템 분석</p>
+<hr>
+
+<p><style></p>
+<p>.rdimm-board-container {</p>
+<p>  background-color: #0b1329;</p>
+<p>  border: 2px solid #1e293b;</p>
+<p>  border-radius: 14px;</p>
+<p>  padding: 24px;</p>
+<p>  margin: 30px 0;</p>
+<p>  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);</p>
+<p>}</p>
+<p>.board-title {</p>
+<p>  text-align: center;</p>
+<p>  font-size: 1.25rem;</p>
+<p>  font-weight: bold;</p>
+<p>  color: #38bdf8;</p>
+<p>  margin-bottom: 6px;</p>
+<p>}</p>
+<p>.board-subtitle {</p>
+<p>  text-align: center;</p>
+<p>  font-size: 0.88rem;</p>
+<p>  color: #94a3b8;</p>
+<p>  margin-bottom: 22px;</p>
+<p>}</p>
+<p>.comp-card-grid {</p>
+<p>  display: grid;</p>
+<p>  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));</p>
+<p>  gap: 20px;</p>
+<p>  margin: 30px 0;</p>
+<p>}</p>
+<p>.comp-card {</p>
+<p>  background-color: #1e293b;</p>
+<p>  border-left: 4px solid #38bdf8;</p>
+<p>  border-radius: 0 10px 10px 0;</p>
+<p>  padding: 20px;</p>
+<p>  box-shadow: 0 4px 12px rgba(0,0,0,0.2);</p>
+<p>}</p>
+<p>.comp-card-rcd { border-left-color: #ef4444; }</p>
+<p>.comp-card-pmic { border-left-color: #f59e0b; }</p>
+<p>.comp-card-spd { border-left-color: #10b981; }</p>
+<p>.comp-card-dram { border-left-color: #3b82f6; }</p>
+<p>.comp-card-ts { border-left-color: #a855f7; }</p>
+
+<p>.comp-header {</p>
+<p>  font-size: 1.05rem;</p>
+<p>  font-weight: bold;</p>
+<p>  margin-bottom: 8px;</p>
+<p>  display: flex;</p>
+<p>  align-items: center;</p>
+<p>  gap: 8px;</p>
+<p>}</p>
+<p>.badge {</p>
+<p>  font-size: 0.75rem;</p>
+<p>  padding: 2px 8px;</p>
+<p>  border-radius: 4px;</p>
+<p>  font-weight: bold;</p>
+<p>}</p>
+<p>.badge-rcd { background-color: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid #ef4444; }</p>
+<p>.badge-pmic { background-color: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid #f59e0b; }</p>
+<p>.badge-spd { background-color: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #10b981; }</p>
+<p>.badge-dram { background-color: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid #3b82f6; }</p>
+<p>.badge-ts { background-color: rgba(168, 85, 247, 0.2); color: #c084fc; border: 1px solid #a855f7; }</p>
+
+<p>.insight-box {</p>
+<p>  background-color: rgba(56, 189, 248, 0.1);</p>
+<p>  border-left: 4px solid #38bdf8;</p>
+<p>  padding: 18px;</p>
+<p>  border-radius: 0 8px 8px 0;</p>
+<p>  margin: 24px 0;</p>
+<p>}</p>
+<p>.insight-box-title {</p>
+<p>  font-weight: bold;</p>
+<p>  color: #38bdf8;</p>
+<p>  margin-bottom: 8px;</p>
+<p>  display: flex;</p>
+<p>  align-items: center;</p>
+<p>  gap: 6px;</p>
+<p>}</p>
+<p>.insight-box-text {</p>
+<p>  font-size: 0.92rem;</p>
+<p>  color: #cbd5e1;</p>
+<p>  margin: 0;</p>
+<p>  line-height: 1.6;</p>
+<p>}</p>
+<p>.legend-chip-bar {</p>
+<p>  display: flex;</p>
+<p>  justify-content: center;</p>
+<p>  flex-wrap: wrap;</p>
+<p>  gap: 16px;</p>
+<p>  margin-top: 16px;</p>
+<p>  padding-top: 12px;</p>
+<p>  border-top: 1px solid #334155;</p>
+<p>  font-size: 0.82rem;</p>
+<p>  color: #cbd5e1;</p>
+<p>}</p>
+<p></style></p>
+
+<h1>🖥️ Registered DIMM (RDIMM) 구조 및 소자 구성 분석</h1>
+
+<p><strong>RDIMM (Registered Dual In-line Memory Module)</strong> 은 글로벌 반도체 데이터센터 인프라의 핵심 메인 메모리 표준입니다. Rambus, 삼성전자, SK하이닉스 등의 차세대 서버 칩셋 아키텍처에 따르면, DDR5 RDIMM은 단순 DRAM 칩 나열을 넘어 <strong>RCD(Registering Clock Driver)</strong>, <strong>PMIC(전력 관리 IC)</strong>, <strong>SPD Hub</strong>, <strong>온도 센서(TS)</strong> 및 독립된 듀얼 32-bit 서브채널(Sub-channel A/B) 구조를 정밀하게 탑재하고 있습니다.</p>
+
+<hr>
+
+<h2>🛠️ Section 1. Rambus 레퍼런스 기반 DDR5 RDIMM PCB 물리 구성도</h2>
+
+<p>아래 다이어그램은 <strong>Rambus DDR5 Server DIMM Chipset</strong> 아키텍처 규격을 기반으로 작성된 <strong>JEDEC 표준 DDR5 RDIMM (288-pin)</strong> 기판(PCB)의 수평 반도체 물리 실물 레이아웃입니다.</p>
+
+<div class="rdimm-board-container">
+<div class="board-title">🟩 DDR5 Server RDIMM PCB 물리 토폴로지 (Board Topology)</div>
+<div class="board-subtitle">※ 듀얼 서브채널 (Sub-Channel A/B) 및 주요 칩셋 (RCD, PMIC, SPD Hub, TS0, TS1) 배치</div>
+
+<p><svg viewBox="0 0 1000 440" width="100%" height="auto" style="border-radius: 10px; overflow: hidden; background: #042f2e; border: 2px solid #0d9488;"></p>
+<p><!-- Outer PCB Substrate Base --></p>
+<p><rect x="20" y="20" width="960" height="320" rx="12" fill="#064e3b" stroke="#10b981" stroke-width="2.5"/></p>
+
+<p><!-- Sub-channel Area Background Boundaries --></p>
+<p><!-- Sub-Channel A (Left) --></p>
+<p><rect x="40" y="35" width="420" height="290" rx="8" fill="rgba(14, 116, 144, 0.12)" stroke="rgba(14, 116, 144, 0.4)" stroke-dasharray="4 4"/></p>
+<p><text x="55" y="55" fill="#38bdf8" font-size="12" font-weight="bold">🔹 Sub-Channel A</text></p>
+
+<p><!-- Sub-Channel B (Right) --></p>
+<p><rect x="540" y="35" width="420" height="290" rx="8" fill="rgba(14, 116, 144, 0.12)" stroke="rgba(14, 116, 144, 0.4)" stroke-dasharray="4 4"/></p>
+<p><text x="555" y="55" fill="#38bdf8" font-size="12" font-weight="bold">🔹 Sub-Channel B</text></p>
+
+<p><!-- Gold Finger Edge Connector (Bottom 288-pin) --></p>
+<p><g fill="#d97706" stroke="#b45309" stroke-width="1"></p>
+<p><rect x="50" y="350" width="420" height="40" rx="3" fill="#f59e0b"/></p>
+<p><rect x="530" y="350" width="420" height="40" rx="3" fill="#f59e0b"/></p>
+<p><!-- Key Notch (Center) --></p>
+<p><rect x="475" y="350" width="50" height="25" fill="#0b1329" stroke="none"/></p>
+<p></g></p>
+<p><text x="500" y="415" fill="#fbbf24" font-size="13" font-weight="bold" text-anchor="middle">288-Pin Gold Finger</text></p>
+
+<p><!-- 1. RCD (Center Registering Clock Driver) --></p>
+<p><g></p>
+<p><rect x="430" y="185" width="140" height="80" rx="8" fill="#991b1b" stroke="#ef4444" stroke-width="3"/></p>
+<p><text x="500" y="232" fill="#ffffff" font-size="20" font-weight="bold" text-anchor="middle">RCD</text></p>
+<p></g></p>
+
+<p><!-- Signal Bus Traces (RCD to DRAM & Gold Finger) --></p>
+<p><path d="M 500 350 L 500 265" stroke="#ef4444" stroke-width="3" stroke-dasharray="3 3"/></p>
+<p><path d="M 430 225 L 375 225" stroke="#ef4444" stroke-width="2"/></p>
+<p><path d="M 570 225 L 625 225" stroke="#ef4444" stroke-width="2"/></p>
+
+<p><!-- 2. PMIC (Power Management IC - Top Center) --></p>
+<p><g></p>
+<p><rect x="440" y="45" width="120" height="65" rx="6" fill="#78350f" stroke="#f59e0b" stroke-width="2.5"/></p>
+<p><text x="500" y="84" fill="#ffffff" font-size="17" font-weight="bold" text-anchor="middle">PMIC</text></p>
+<p></g></p>
+<p><!-- Power Inductors & Capacitors Bank around PMIC --></p>
+<p><rect x="422" y="70" width="12" height="25" rx="2" fill="#451a03" stroke="#d97706"/></p>
+<p><text x="428" y="86" fill="#fde68a" font-size="8" text-anchor="middle">L1</text></p>
+<p><rect x="566" y="70" width="12" height="25" rx="2" fill="#451a03" stroke="#d97706"/></p>
+<p><text x="572" y="86" fill="#fde68a" font-size="8" text-anchor="middle">L2</text></p>
+
+<p><!-- 3. SPD Hub (Top Left of PMIC) --></p>
+<p><g></p>
+<p><rect x="300" y="55" width="95" height="50" rx="5" fill="#064e3b" stroke="#10b981" stroke-width="2"/></p>
+<p><text x="347" y="86" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">SPD Hub</text></p>
+<p></g></p>
+
+<p><!-- 4. Sideband Thermal Sensors TS0 (Far Left) & TS1 (Far Right) --></p>
+<p><g></p>
+<p><rect x="50" y="60" width="50" height="40" rx="4" fill="#581c87" stroke="#c084fc" stroke-width="2"/></p>
+<p><text x="75" y="85" fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle">TS0</text></p>
+<p></g></p>
+<p><g></p>
+<p><rect x="900" y="60" width="50" height="40" rx="4" fill="#581c87" stroke="#c084fc" stroke-width="2"/></p>
+<p><text x="925" y="85" fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle">TS1</text></p>
+<p></g></p>
+
+<p><!-- 5. Sub-channel A DRAM IC Array (4 Data DRAM + 1 Sideband ECC DRAM) --></p>
+<p><g fill="#1e3a8a" stroke="#60a5fa" stroke-width="1.5"></p>
+<p><rect x="60" y="160" width="60" height="130" rx="4"/></p>
+<p><rect x="130" y="160" width="60" height="130" rx="4"/></p>
+<p><rect x="200" y="160" width="60" height="130" rx="4"/></p>
+<p><rect x="270" y="160" width="60" height="130" rx="4"/></p>
+<p><rect x="340" y="160" width="60" height="130" rx="4" fill="#1e1b4b" stroke="#818cf8" stroke-width="2"/></p>
+<p></g></p>
+
+<p><text x="90" y="230" fill="#93c5fd" font-size="11" font-weight="bold" text-anchor="middle">DRAM</text></p>
+<p><text x="160" y="230" fill="#93c5fd" font-size="11" font-weight="bold" text-anchor="middle">DRAM</text></p>
+<p><text x="230" y="230" fill="#93c5fd" font-size="11" font-weight="bold" text-anchor="middle">DRAM</text></p>
+<p><text x="300" y="230" fill="#93c5fd" font-size="11" font-weight="bold" text-anchor="middle">DRAM</text></p>
+<p><text x="370" y="230" fill="#c7d2fe" font-size="11" font-weight="bold" text-anchor="middle">ECC IC</text></p>
+
+<p><!-- 6. Sub-channel B DRAM IC Array (1 Sideband ECC DRAM + 4 Data DRAM) --></p>
+<p><g fill="#1e3a8a" stroke="#60a5fa" stroke-width="1.5"></p>
+<p><rect x="600" y="160" width="60" height="130" rx="4" fill="#1e1b4b" stroke="#818cf8" stroke-width="2"/></p>
+<p><rect x="670" y="160" width="60" height="130" rx="4"/></p>
+<p><rect x="740" y="160" width="60" height="130" rx="4"/></p>
+<p><rect x="810" y="160" width="60" height="130" rx="4"/></p>
+<p><rect x="880" y="160" width="60" height="130" rx="4"/></p>
+<p></g></p>
+
+<p><text x="630" y="230" fill="#c7d2fe" font-size="11" font-weight="bold" text-anchor="middle">ECC IC</text></p>
+<p><text x="700" y="230" fill="#93c5fd" font-size="11" font-weight="bold" text-anchor="middle">DRAM</text></p>
+<p><text x="770" y="230" fill="#93c5fd" font-size="11" font-weight="bold" text-anchor="middle">DRAM</text></p>
+<p><text x="840" y="230" fill="#93c5fd" font-size="11" font-weight="bold" text-anchor="middle">DRAM</text></p>
+<p><text x="910" y="230" fill="#93c5fd" font-size="11" font-weight="bold" text-anchor="middle">DRAM</text></p>
+
+<p><!-- MLCC Decoupling Capacitor Array lines --></p>
+<p><g fill="#94a3b8"></p>
+<p><rect x="80" y="300" width="20" height="6" rx="1"/></p>
+<p><rect x="150" y="300" width="20" height="6" rx="1"/></p>
+<p><rect x="220" y="300" width="20" height="6" rx="1"/></p>
+<p><rect x="290" y="300" width="20" height="6" rx="1"/></p>
+<p><rect x="360" y="300" width="20" height="6" rx="1"/></p>
+<p><rect x="620" y="300" width="20" height="6" rx="1"/></p>
+<p><rect x="690" y="300" width="20" height="6" rx="1"/></p>
+<p><rect x="760" y="300" width="20" height="6" rx="1"/></p>
+<p><rect x="830" y="300" width="20" height="6" rx="1"/></p>
+<p><rect x="900" y="300" width="20" height="6" rx="1"/></p>
+<p></g></p>
+<p></svg></p>
+
+<div class="legend-chip-bar">
+<div>🔴 <strong>RCD</strong></div>
+<div>🟡 <strong>PMIC</strong></div>
+<div>🟢 <strong>SPD Hub</strong></div>
+<div>🟣 <strong>TS0 / TS1</strong></div>
+<div>🔵 <strong>DRAM & ECC IC</strong></div>
+<div>🟧 <strong>288-Pin Gold Finger</strong></div>
+<p></div></p>
+<p></div></p>
+
+<hr>
+
+<h2>⚡ Section 2. Rambus DDR5 DIMM 칩셋 및 RDIMM 소자별 세부 분석</h2>
+
+<p>Rambus의 DDR5 Server DIMM Chipset 솔루션을 바탕으로 한 DDR5 RDIMM의 주요 반도체 소자별 핵심 역할 및 작동 메커니즘입니다.</p>
+
+<div class="comp-card-grid">
+
+<p>  <!-- 1. RCD --></p>
+  <div class="comp-card comp-card-rcd">
+    <div class="comp-header">
+<p>      <span class="badge badge-rcd">Rambus RCD50x0</span></p>
+<p>      <span>1. RCD (Registering Clock Driver)</span></p>
+<p>    </div></p>
+<p>    <p style="font-size: 0.9rem; color: #cbd5e1; line-height: 1.6;"></p>
+<p>      • <strong>핵심 역할:</strong> CPU 메모리 컨트롤러에서 전달되는 <strong>커맨드/주소(C/A), 제어 및 클록(CK) 신호를 수신하여 버퍼링 및 재타이밍(Re-clocking)</strong> 한 뒤, 듀얼 서브채널(Sub-channel A/B) DRAM IC들로 정밀하게 재생성하여 공급합니다.<br/></p>
+<p>      • <strong>DDR5 기술 혁신:</strong> DDR4 대비 구동 클록 속도가 4.8 GT/s ~ 8.0+ GT/s로 급상승함에 따라 발생할 수 있는 신호 왜곡 및 지터(Jitter)를 획기적으로 개선하며, 서버의 채널당 DIMM 탑재 밀도를 대폭 높여줍니다.</p>
+<p>    </p></p>
+<p>  </div></p>
+
+<p>  <!-- 2. PMIC --></p>
+  <div class="comp-card comp-card-pmic">
+    <div class="comp-header">
+<p>      <span class="badge badge-pmic">Rambus PMIC50x0</span></p>
+<p>      <span>2. PMIC (Power Management IC)</span></p>
+<p>    </div></p>
+<p>    <p style="font-size: 0.9rem; color: #cbd5e1; line-height: 1.6;"></p>
+<p>      • <strong>핵심 역할:</strong> 메인보드로부터 직접 공급받는 <strong>12V VIN 입력 전원을 모듈 온보드 상에서 레귤레이션</strong>하여 DRAM 코어용 <strong>VDD (1.1V)</strong>, I/O 버스용 <strong>VDDQ (1.1V)</strong>, 및 펌핑 전압 <strong>VPP (1.8V)</strong> 를 직접 생성합니다.<br/></p>
+<p>      • <strong>도입 이유:</strong> 기존 메인보드에 의존하던 전력 공급 방식(VRM)을 메모리 모듈 내부로 완전히 이관(DIMM-on-PMIC)함으로써 전압 트랜전트 억제, 전력 공급 손실(IR Drop) 최소화 및 모듈별 정밀 전력 텔레메트리가 가능해졌습니다.</p>
+<p>    </p></p>
+<p>  </div></p>
+
+<p>  <!-- 3. SPD Hub --></p>
+  <div class="comp-card comp-card-spd">
+    <div class="comp-header">
+<p>      <span class="badge badge-spd">Rambus SPD5118</span></p>
+<p>      <span>3. SPD Hub (Serial Presence Detect Hub)</span></p>
+<p>    </div></p>
+<p>    <p style="font-size: 0.9rem; color: #cbd5e1; line-height: 1.6;"></p>
+<p>      • <strong>핵심 역할:</strong> 메모리 모듈의 속도, 타이밍 프로필(CL-tRCD-tRP), 모듈 용량, 제조사 시리얼 데이터를 보유한 <strong>JEDEC 규격 EEPROM</strong>과 <strong>내장 온도 센서 및 I3C 고속 통신 버스 컨트롤러</strong>가 통합된 칩셋입니다.<br/></p>
+<p>      • <strong>I3C 버스 혁신:</strong> 기존 DDR4의 I2C/SMBus 대비 최대 12.5MHz의 10배 이상 빠른 <strong>I3C(Improved Inter-Integrated Circuit) 통신</strong>을 채택하여 서버 시스템 매니지먼트 폰과의 실시간 텔레메트리 데이터 교환을 전담합니다.</p>
+<p>    </p></p>
+<p>  </div></p>
+
+<p>  <!-- 4. Thermal Sensors TS0 & TS1 --></p>
+  <div class="comp-card comp-card-ts">
+    <div class="comp-header">
+<p>      <span class="badge badge-ts">Rambus TS5111</span></p>
+<p>      <span>4. Sideband Thermal Sensors (TS0 / TS1)</span></p>
+<p>    </div></p>
+<p>    <p style="font-size: 0.9rem; color: #cbd5e1; line-height: 1.6;"></p>
+<p>      • <strong>핵심 역할:</strong> DDR5 RDIMM 기판의 <strong>최좌측(TS0)과 최우측(TS1) 양 끝단에 독립 배치되는 고정밀 온보드 온도 센서</strong>입니다.<br/></p>
+<p>      • <strong>온도 뷰 모니터링:</strong> 서버 랙 내부의 공기 흐름 방향에 따라 메모리 모듈 양 끝의 국소적 온도 차이(Thermal Gradient)를 실시간 감지하여, 서버 섀시 수랭/공랭 팬 속도를 정밀 제어하고 열 쓰로틀링(Throttling)을 방지합니다.</p>
+<p>    </p></p>
+<p>  </div></p>
+
+<p>  <!-- 5. Dual Sub-channel DRAM & Sideband ECC --></p>
+  <div class="comp-card comp-card-dram">
+    <div class="comp-header">
+<p>      <span class="badge badge-dram">SDRAM Core Array</span></p>
+<p>      <span>5. Dual Sub-channel DRAM & Sideband ECC</span></p>
+<p>    </div></p>
+<p>    <p style="font-size: 0.9rem; color: #cbd5e1; line-height: 1.6;"></p>
+<p>      • <strong>독립 듀얼 서브채널 구조:</strong> DDR5는 64-bit 단일 채널 대신 <strong>32-bit 독립 서브채널 A와 서브채널 B</strong> 2개로 분할되어 메모리 액세스 효율과 데이터 트랜잭션 병렬성을 2배로 향상시킵니다.<br/></p>
+<p>      • <strong>Sideband ECC:</strong> 각 32-bit 서브채널마다 8-bit의 독립 전용 ECC DRAM 다이가 결합되어(총 40-bit per sub-channel), 실리콘 내부 오류(On-die ECC) 외에 전송 버스 오류까지 완벽히 검출/수정(Sideband ECC)합니다.</p>
+<p>    </p></p>
+<p>  </div></p>
+
+<p>  <!-- 6. 288-pin Connector & Passives --></p>
+  <div class="comp-card" style="border-left-color: #94a3b8;">
+    <div class="comp-header">
+<p>      <span class="badge" style="background-color: rgba(148, 163, 184, 0.2); color: #cbd5e1; border: 1px solid #94a3b8;">인터페이스 & 수동소자</span></p>
+<p>      <span>6. 288-Pin 골드핑거 & MLCC 수동소자</span></p>
+<p>    </div></p>
+<p>    <p style="font-size: 0.9rem; color: #cbd5e1; line-height: 1.6;"></p>
+<p>      • <strong>288-Pin 골드핑거:</strong> 중앙 Key Notch를 기준으로 분할되어, CPU 데이터 버스, C/A 버스, 12V 전원 및 I3C 제어 신호를 수신.<br/></p>
+<p>      • <strong>MLCC & 디커플링 콘덴서:</strong> PMIC 주변 인덕터(L1, L2)와 각 DRAM IC 하단에 고밀도 세라믹 콘덴서를 배치하여 전압 리플(Ripple) 및 고주파 스위칭 노이즈 억제.</p>
+<p>    </p></p>
+<p>  </div></p>
+
+<p></div></p>
+
+<div class="insight-box">
+  <div class="insight-box-title">💡 Rambus 기술 자료 기준: DDR4 RDIMM vs DDR5 RDIMM 비교</div>
+  <div class="insight-box-text">
+<p>    • <strong>전력 아키텍처:</strong> DDR4는 1.2V 전력을 서버 메인보드 VRM에서 공급받았으나, DDR5 RDIMM은 메인보드가 12V를 공급하고 <strong>모듈 내부의 PMIC가 1.1V로 개별 제어</strong>합니다.<br/></p>
+<p>    • <strong>채널 아키텍처:</strong> DDR4는 64-bit 단일 채널이었으나, DDR5는 <strong>32-bit 듀얼 서브채널(Sub-A / Sub-B) 구조</strong>를 적용하여 버스트 길이(Burst Length)가 8에서 16으로 확장되고 메모리 연산 효율이 대폭 상승했습니다.<br/></p>
+<p>    • <strong>버퍼링 및 관리:</strong> Rambus RCD를 통해 C/A 신호가 버퍼링되며, 차세대 <strong>I3C 버스 기반 SPD Hub와 듀얼 TS 센서(TS0/TS1)</strong> 로 실시간 초고속 모듈 상태 관리(Telemetry)가 수행됩니다.</p>
+<p>  </div></p>
+<p></div></p>
+
+<hr>
+
+<h2>📐 Section 3. RDIMM 구성 방식 (Configuration) & DRAM Die별 모듈 용량 매트릭스</h2>
+
+<h3>1. DIMM Configuration 표기법 핵심 요소</h3>
+<p>서버용 RDIMM 규격 표기 시 사용되는 <strong><code>nR x m</code></strong> 형태의 구성 요소 개념입니다.</p>
+
+<ul>
+<li><strong>Rank (<code>nR</code>)</strong>: CPU 메모리 컨트롤러가 한 번에 독점 액세스하는 <strong>64-bit 데이터 버스 단위의 독립된 DRAM 칩 그룹</strong> (Single Rank: <code>1R</code>, Dual Rank: <code>2R</code>, Quad Rank: <code>4R</code> 등).</li>
+<li><strong>Bit-width (<code>x4</code>, <code>x8</code>)</strong>: DRAM 칩 단일 개당 데이터 입출력(DQ) 핀 수.</li>
+<li><strong><code>x4</code> (4-bit)</strong>: 64-bit 1개 Rank 구성 시 데이터 DRAM <strong>16개</strong> 필요. (서버 시장에서 고용량 및 고급 ECC 기능 지원의 표준)</li>
+<li><strong><code>x8</code> (8-bit)</strong>: 64-bit 1개 Rank 구성 시 데이터 DRAM <strong>8개</strong> 필요. (비용 효율성 중심 모듈)</li>
+<li><strong>3DS (Three-Dimensional Stacking)</strong>: TSV(구리 관통 전극) 기술로 DRAM Die를 수직 적층(2H, 4H 등)하여 Rank 수와 용량을 극대화한 초고용량 기술.</li>
+</ul>
+
+<hr>
+
+<h3>2. DRAM Die (16Gb / 24Gb / 32Gb) vs DIMM Configuration 용량 매트릭스</h3>
+
+<p>DRAM 칩 1개의 용량(Die Density)과 모듈 구성(Configuration)에 따른 <strong>DDR5 RDIMM 모듈 총 용량(Module Density)</strong> 매트릭스 표입니다. <em>(단, Sideband ECC 칩 포함)</em></p>
+
+<table><thead><tr>
+<th>모듈 구성 (Configuration)</th>
+<th>Rank 수</th>
+<th>칩 비트폭</th>
+<th>데이터 칩 개수</th>
+<th>16Gb (2GB) Die</th>
+<th>24Gb (3GB) Die (Non-Binary)</th>
+<th>32Gb (4GB) Die</th>
+<th>주요 적용 분야 & 특징</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>1Rx8</strong></td>
+<td>1 Rank</td>
+<td>x8</td>
+<td>8개</td>
+<td><strong>16 GB</strong></td>
+<td><strong>24 GB</strong></td>
+<td><strong>32 GB</strong></td>
+<td>엔트리급 서버, 보급형 서버 인프라</td>
+</tr>
+<tr>
+<td><strong>1Rx4</strong></td>
+<td>1 Rank</td>
+<td>x4</td>
+<td>16개</td>
+<td><strong>32 GB</strong></td>
+<td><strong>48 GB</strong></td>
+<td><strong>64 GB</strong></td>
+<td>중소형 서버 표준 단면/양면 구성</td>
+</tr>
+<tr>
+<td><strong>2Rx8</strong></td>
+<td>2 Ranks</td>
+<td>x8</td>
+<td>16개</td>
+<td><strong>32 GB</strong></td>
+<td><strong>48 GB</strong></td>
+<td><strong>64 GB</strong></td>
+<td>x8 기반 고용량 구성 (가성비)</td>
+</tr>
+<tr>
+<td><strong>2Rx4</strong></td>
+<td>2 Ranks</td>
+<td>x4</td>
+<td>32개</td>
+<td><strong>64 GB</strong></td>
+<td><strong>96 GB</strong></td>
+<td><strong>128 GB</strong></td>
+<td><strong>주력 고성능 데이터센터 서버 RDIMM 표준</strong></td>
+</tr>
+<tr>
+<td><strong>2Rx4 (3DS 2H)</strong> <em>(4R)</em></td>
+<td>4 Ranks</td>
+<td>x4 (2H 적층)</td>
+<td>64개 (3DS)</td>
+<td><strong>128 GB</strong></td>
+<td><strong>192 GB</strong></td>
+<td><strong>256 GB</strong></td>
+<td>AI 학습/추론 서버 & 초고용량 클라우드</td>
+</tr>
+<tr>
+<td><strong>2Rx4 (3DS 4H)</strong> <em>(8R)</em></td>
+<td>8 Ranks</td>
+<td>x4 (4H 적층)</td>
+<td>128개 (3DS)</td>
+<td><strong>256 GB</strong></td>
+<td><strong>384 GB</strong></td>
+<td><strong>512 GB</strong></td>
+<td>하이엔드 AI 서버 & 인메모리 DB 전용</td>
+</tr>
+</tbody></table>
+
+<blockquote><strong>💡 용량 계산 공식 (Module Capacity Calculation)</strong>  </blockquote>
+<blockquote>$$\text{Module Density (GB)} = \frac{\text{Rank 수} \times (64 / \text{Bit-width}) \times \text{Die Density (Gb)}}{8}$$  </blockquote>
+<blockquote><em>예시: 24Gb Die 기반 2Rx4 구성 = $2 \times (64 / 4) \times 24 / 8 = 2 \times 16 \times 3 = \mathbf{96\text{ GB}}$</em></blockquote>
+
+<div class="insight-box">
+  <div class="insight-box-title">💡 Configuration 선택 및 Market Insight</div>
+  <div class="insight-box-text">
+<p>    • <strong>24Gb Non-Binary DRAM의 부상:</strong> 기존 16Gb/32Gb 등 2의 거듭제곱 규격 외에 <strong>24Gb Die</strong>가 등장하면서 24GB, 48GB, 96GB, 192GB, 384GB와 같은 유연한 중간 용량 규격이 활성화되어 데이터센터 비용 대비 효율(TCO)이 대폭 개선되었습니다.<br/></p>
+<p>    • <strong>x4 vs x8 선택 기준:</strong> x4 DRAM 구성은 더 많은 칩을 사용하여 <strong>SDDC(Single Device Data Correction)</strong> 등 강화된 ECC 기능과 높은 랭크 용량을 제공하므로 미션 크리티컬 서버 및 AI 인프라에 선호됩니다.</p>
+<p>  </div></p>
+<p></div></p>
+
+<hr>
+
+<p>👈 <strong><a href="/dram-overview">DRAM Overview로 돌아가기</a></strong></p>
+
+
+    </article>
+  </main>
+
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'default' });
+  </script>
+</body>
+</html>

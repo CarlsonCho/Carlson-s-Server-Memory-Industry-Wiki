@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔴 AMD EPYC 서버 CPU 로드맵 | AI Server Wiki</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --bg-primary: #0b0f19;
+      --bg-secondary: #111827;
+      --bg-card: #1f2937;
+      --text-primary: #f9fafb;
+      --text-secondary: #9ca3af;
+      --text-muted: #6b7280;
+      --accent: #3b82f6;
+      --accent-hover: #60a5fa;
+      --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+      --border-color: #374151;
+      --code-bg: #111827;
+      --sidebar-width: 280px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.7;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Navigation */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: rgba(17, 24, 39, 0.8);
+      backdrop-filter: blur(12px);
+      border-right: 1px solid var(--border-color);
+      padding: 2rem 1.25rem;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      overflow-y: auto;
+      z-index: 10;
+    }
+
+    .brand {
+      font-size: 1.25rem;
+      font-weight: 700;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-group-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .nav-link:hover {
+      color: var(--text-primary);
+      background-color: rgba(59, 130, 246, 0.1);
+      transform: translateX(4px);
+    }
+
+    .nav-link.active {
+      color: #ffffff;
+      background: var(--accent-gradient);
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    /* Main Content */
+    .main-wrapper {
+      margin-left: var(--sidebar-width);
+      flex: 1;
+      padding: 3rem 4rem;
+      max-width: 1100px;
+    }
+
+    .content {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 3rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Typography & Elements */
+    h1, h2, h3, h4, h5, h6 {
+      color: var(--text-primary);
+      font-weight: 700;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      line-height: 1.3;
+    }
+
+    h1 {
+      font-size: 2.25rem;
+      margin-top: 0;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--border-color);
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    h2 {
+      font-size: 1.6rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    h3 { font-size: 1.25rem; }
+
+    p {
+      margin-bottom: 1.25rem;
+      color: #d1d5db;
+    }
+
+    a {
+      color: var(--accent-hover);
+      text-decoration: none;
+      transition: border-bottom 0.2s ease;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    ul, ol {
+      margin-bottom: 1.25rem;
+      padding-left: 1.5rem;
+      color: #d1d5db;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+
+    blockquote {
+      border-left: 4px solid var(--accent);
+      background: rgba(59, 130, 246, 0.05);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.25rem;
+      border-radius: 0 0.5rem 0.5rem 0;
+      color: #9ca3af;
+      font-style: italic;
+    }
+
+    code {
+      font-family: 'Fira Code', monospace;
+      background: var(--code-bg);
+      color: #f35b04;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.875em;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    pre {
+      background: var(--code-bg);
+      padding: 1.25rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border-color);
+    }
+
+    pre code {
+      background: transparent;
+      padding: 0;
+      border: none;
+      color: #e5e7eb;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.75rem;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border: 1px solid var(--border-color);
+    }
+
+    th {
+      background-color: var(--bg-card);
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    tr:nth-child(even) {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+
+    tr:hover {
+      background-color: rgba(59, 130, 246, 0.05);
+    }
+
+    hr {
+      border: 0;
+      height: 1px;
+      background: var(--border-color);
+      margin: 2rem 0;
+    }
+
+    /* Mermaid Container */
+    .mermaid {
+      background: #ffffff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    @media (max-width: 768px) {
+      body { flex-direction: column; }
+      .sidebar { width: 100%; position: relative; height: auto; }
+      .main-wrapper { margin-left: 0; padding: 1.5rem; }
+      .content { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="brand">⚡ AI Server Wiki</div>
+    <div class="nav-group-title">Documents</div>
+    <div class="nav-links">
+      <a href="ai-server-overview.html" class="nav-link ">AI SERVER OVERVIEW</a>
+<a href="amd-cpu-roadmap.html" class="nav-link active">AMD CPU ROADMAP</a>
+<a href="amd-roadmap.html" class="nav-link ">AMD ROADMAP</a>
+<a href="ampere-roadmap.html" class="nav-link ">AMPERE ROADMAP</a>
+<a href="api-examples.html" class="nav-link ">API EXAMPLES</a>
+<a href="aws-roadmap.html" class="nav-link ">AWS ROADMAP</a>
+<a href="cxl-overview.html" class="nav-link ">CXL OVERVIEW</a>
+<a href="dram-overview.html" class="nav-link ">DRAM OVERVIEW</a>
+<a href="gddr-overview.html" class="nav-link ">GDDR OVERVIEW</a>
+<a href="general-server-overview.html" class="nav-link ">GENERAL SERVER OVERVIEW</a>
+<a href="google-roadmap.html" class="nav-link ">GOOGLE ROADMAP</a>
+<a href="hbm-overview.html" class="nav-link ">HBM OVERVIEW</a>
+<a href="index.html" class="nav-link ">INDEX</a>
+<a href="intel-roadmap.html" class="nav-link ">INTEL ROADMAP</a>
+<a href="lpcamm-overview.html" class="nav-link ">LPCAMM OVERVIEW</a>
+<a href="markdown-examples.html" class="nav-link ">MARKDOWN EXAMPLES</a>
+<a href="mcrdimm-overview.html" class="nav-link ">MCRDIMM OVERVIEW</a>
+<a href="memory-overview.html" class="nav-link ">MEMORY OVERVIEW</a>
+<a href="nand-overview.html" class="nav-link ">NAND OVERVIEW</a>
+<a href="nvidia-blackwell.html" class="nav-link ">NVIDIA BLACKWELL</a>
+<a href="nvidia-hopper.html" class="nav-link ">NVIDIA HOPPER</a>
+<a href="nvidia-roadmap.html" class="nav-link ">NVIDIA ROADMAP</a>
+<a href="nvidia-rubin.html" class="nav-link ">NVIDIA RUBIN</a>
+<a href="rdimm-overview.html" class="nav-link ">RDIMM OVERVIEW</a>
+<a href="socamm-overview.html" class="nav-link ">SOCAMM OVERVIEW</a>
+<a href="step2-market.html" class="nav-link ">STEP2 MARKET</a>
+<a href="step3-roadmap.html" class="nav-link ">STEP3 ROADMAP</a>
+<a href="step4-teardown.html" class="nav-link ">STEP4 TEARDOWN</a>
+    </div>
+  </nav>
+
+  <main class="main-wrapper">
+    <article class="content">
+      <h1>🔴 AMD EPYC 서버 CPU 로드맵</h1>
+
+<p>AMD는 <strong>EPYC (에픽)</strong> 프로세서 브랜드를 통해 인텔 제온이 지배하던 범용 서버 CPU 시장의 구도를 완벽히 뒤흔들었습니다. 칩렛(Chiplet) 구조의 선도적 도입을 통한 압도적인 코어 밀도(Core Density)와 넓은 메모리 채널 수, 가성비를 앞세워 글로벌 CSP(클라우드 서비스 제공사) 시장 점유율을 <strong>30% 이상</strong>으로 확장했습니다.</p>
+
+<hr>
+
+<h2>1. 대표 플랫폼 이미지</h2>
+<p>단일 서버 보드에 초고밀도 연산력을 공급하기 위해 대규모 CPU 소켓 슬롯과 다채널 DDR5 메모리가 장착되는 <strong>차세대 AMD EPYC 서버 마더보드 유닛</strong>입니다.</p>
+
+<p><img src="./.vitepress/public/amd-instinct-server.jpg" alt="AMD EPYC Server Platform Board" style="max-width: 480px; border-radius: 12px; margin: 20px 0; box-shadow: 0 8px 24px rgba(0,0,0,0.2);" /></p>
+
+<hr>
+
+<h2>2. AMD EPYC CPU 세대별 로드맵 요약</h2>
+
+<p>AMD는 단일 공정에서 성능 특화형 코어(Zen)와 효율 밀도 특화형 코어(Zen C)를 분리하여 맞춤형 데이터센터 라인업을 제공하는 칩렛 최적화 로드맵을 구축하고 있습니다.</p>
+
+<table><thead><tr>
+<th>출시 연도</th>
+<th>아키텍처 세대</th>
+<th>최대 코어 수 (단일 CPU)</th>
+<th>메모리 및 PCIe 채널</th>
+<th>주요 특징 및 대상 워크로드</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>2022</strong></td>
+<td><strong>4세대 Genoa (Zen 4)</strong></td>
+<td>96 코어</td>
+<td>12채널 DDR5 / PCIe Gen5</td>
+<td>미세화된 5nm 공정 전환, 클라우드 가상화 및 하이엔드 인프라 표준 개척.</td>
+</tr>
+<tr>
+<td><strong>2023</strong></td>
+<td><strong>4세대 Bergamo (Zen 4c)</strong></td>
+<td><strong>128 코어</strong></td>
+<td>12채널 DDR5 / PCIe Gen5</td>
+<td>고집적 효율 특화 코어를 사용하여 컨테이너 기반 초고밀도 클라우드 호스팅 특화.</td>
+</tr>
+<tr>
+<td><strong>2024~2025</strong></td>
+<td><strong>5세대 Turin (Zen 5)</strong></td>
+<td><strong>128 코어 (P-Core) / 192 코어 (E-Core)</strong></td>
+<td>12채널 DDR5 / 6400MT/s</td>
+<td>3nm/4nm 공정 융합, 전 세대 대비 IPC(클락당 명령 처리 수) 약 17% 향상.</td>
+</tr>
+<tr>
+<td><strong>2026 (E)</strong></td>
+<td><strong>6세대 Venice (Zen 6)</strong></td>
+<td><strong>256 코어 이상 (예측)</strong></td>
+<td>MCR DDR5 / PCIe Gen6</td>
+<td>2nm 이하 차세대 패키징 적용, 메모리 및 I/O 대역폭 한계 재돌파 예정.</td>
+</tr>
+</tbody></table>
+
+<hr>
+
+<h2>3. 하드웨어 구성 및 기술적 차별성</h2>
+
+<p>AMD EPYC CPU 라인업이 서버 시장에서 성공을 거둔 주요 아키텍처 설계 특징입니다.</p>
+
+<ul>
+<li><strong>완전 칩렛(Chiplet) 구조 적용:</strong></li>
+</ul>
+<p>  하나의 거대한 단일 실리콘(Monolithic)으로 CPU를 만드는 인텔과 달리, AMD는 여러 개의 작은 연산 칩렛(CCD)과 하나의 중앙 입출력 제어 칩렛(IOD)을 인쇄 기판 위에서 연결하는 칩렛 패키징을 완성했습니다. 이를 통해 생산 수율을 획기적으로 향상시켰으며 불량률 감소로 극도의 가격 경쟁력을 확보했습니다.</p>
+<ul>
+<li><strong>12채널 메모리 아키텍처:</strong></li>
+</ul>
+<p>  기본 12채널 DDR5 인터페이스를 제공해 동급 인텔 제온 프로세서 대비 CPU와 주 메모리 사이의 데이터 통로 폭을 넓혔습니다. 이는 대용량 인메모리 DB나 다중 가상머신(VM) 부하 상황에서 대기 저항을 획기적으로 상쇄합니다.</p>
+
+    </article>
+  </main>
+
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'default' });
+  </script>
+</body>
+</html>

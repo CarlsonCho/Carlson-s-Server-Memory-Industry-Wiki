@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🟠 AWS 가속기 및 CPU 플랫폼 로드맵 (Trainium & Graviton) | AI Server Wiki</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --bg-primary: #0b0f19;
+      --bg-secondary: #111827;
+      --bg-card: #1f2937;
+      --text-primary: #f9fafb;
+      --text-secondary: #9ca3af;
+      --text-muted: #6b7280;
+      --accent: #3b82f6;
+      --accent-hover: #60a5fa;
+      --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+      --border-color: #374151;
+      --code-bg: #111827;
+      --sidebar-width: 280px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.7;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Navigation */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: rgba(17, 24, 39, 0.8);
+      backdrop-filter: blur(12px);
+      border-right: 1px solid var(--border-color);
+      padding: 2rem 1.25rem;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      overflow-y: auto;
+      z-index: 10;
+    }
+
+    .brand {
+      font-size: 1.25rem;
+      font-weight: 700;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-group-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .nav-link:hover {
+      color: var(--text-primary);
+      background-color: rgba(59, 130, 246, 0.1);
+      transform: translateX(4px);
+    }
+
+    .nav-link.active {
+      color: #ffffff;
+      background: var(--accent-gradient);
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    /* Main Content */
+    .main-wrapper {
+      margin-left: var(--sidebar-width);
+      flex: 1;
+      padding: 3rem 4rem;
+      max-width: 1100px;
+    }
+
+    .content {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 3rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Typography & Elements */
+    h1, h2, h3, h4, h5, h6 {
+      color: var(--text-primary);
+      font-weight: 700;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      line-height: 1.3;
+    }
+
+    h1 {
+      font-size: 2.25rem;
+      margin-top: 0;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--border-color);
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    h2 {
+      font-size: 1.6rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    h3 { font-size: 1.25rem; }
+
+    p {
+      margin-bottom: 1.25rem;
+      color: #d1d5db;
+    }
+
+    a {
+      color: var(--accent-hover);
+      text-decoration: none;
+      transition: border-bottom 0.2s ease;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    ul, ol {
+      margin-bottom: 1.25rem;
+      padding-left: 1.5rem;
+      color: #d1d5db;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+
+    blockquote {
+      border-left: 4px solid var(--accent);
+      background: rgba(59, 130, 246, 0.05);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.25rem;
+      border-radius: 0 0.5rem 0.5rem 0;
+      color: #9ca3af;
+      font-style: italic;
+    }
+
+    code {
+      font-family: 'Fira Code', monospace;
+      background: var(--code-bg);
+      color: #f35b04;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.875em;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    pre {
+      background: var(--code-bg);
+      padding: 1.25rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border-color);
+    }
+
+    pre code {
+      background: transparent;
+      padding: 0;
+      border: none;
+      color: #e5e7eb;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.75rem;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border: 1px solid var(--border-color);
+    }
+
+    th {
+      background-color: var(--bg-card);
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    tr:nth-child(even) {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+
+    tr:hover {
+      background-color: rgba(59, 130, 246, 0.05);
+    }
+
+    hr {
+      border: 0;
+      height: 1px;
+      background: var(--border-color);
+      margin: 2rem 0;
+    }
+
+    /* Mermaid Container */
+    .mermaid {
+      background: #ffffff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    @media (max-width: 768px) {
+      body { flex-direction: column; }
+      .sidebar { width: 100%; position: relative; height: auto; }
+      .main-wrapper { margin-left: 0; padding: 1.5rem; }
+      .content { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="brand">⚡ AI Server Wiki</div>
+    <div class="nav-group-title">Documents</div>
+    <div class="nav-links">
+      <a href="ai-server-overview.html" class="nav-link ">AI SERVER OVERVIEW</a>
+<a href="amd-cpu-roadmap.html" class="nav-link ">AMD CPU ROADMAP</a>
+<a href="amd-roadmap.html" class="nav-link ">AMD ROADMAP</a>
+<a href="ampere-roadmap.html" class="nav-link ">AMPERE ROADMAP</a>
+<a href="api-examples.html" class="nav-link ">API EXAMPLES</a>
+<a href="aws-roadmap.html" class="nav-link active">AWS ROADMAP</a>
+<a href="cxl-overview.html" class="nav-link ">CXL OVERVIEW</a>
+<a href="dram-overview.html" class="nav-link ">DRAM OVERVIEW</a>
+<a href="gddr-overview.html" class="nav-link ">GDDR OVERVIEW</a>
+<a href="general-server-overview.html" class="nav-link ">GENERAL SERVER OVERVIEW</a>
+<a href="google-roadmap.html" class="nav-link ">GOOGLE ROADMAP</a>
+<a href="hbm-overview.html" class="nav-link ">HBM OVERVIEW</a>
+<a href="index.html" class="nav-link ">INDEX</a>
+<a href="intel-roadmap.html" class="nav-link ">INTEL ROADMAP</a>
+<a href="lpcamm-overview.html" class="nav-link ">LPCAMM OVERVIEW</a>
+<a href="markdown-examples.html" class="nav-link ">MARKDOWN EXAMPLES</a>
+<a href="mcrdimm-overview.html" class="nav-link ">MCRDIMM OVERVIEW</a>
+<a href="memory-overview.html" class="nav-link ">MEMORY OVERVIEW</a>
+<a href="nand-overview.html" class="nav-link ">NAND OVERVIEW</a>
+<a href="nvidia-blackwell.html" class="nav-link ">NVIDIA BLACKWELL</a>
+<a href="nvidia-hopper.html" class="nav-link ">NVIDIA HOPPER</a>
+<a href="nvidia-roadmap.html" class="nav-link ">NVIDIA ROADMAP</a>
+<a href="nvidia-rubin.html" class="nav-link ">NVIDIA RUBIN</a>
+<a href="rdimm-overview.html" class="nav-link ">RDIMM OVERVIEW</a>
+<a href="socamm-overview.html" class="nav-link ">SOCAMM OVERVIEW</a>
+<a href="step2-market.html" class="nav-link ">STEP2 MARKET</a>
+<a href="step3-roadmap.html" class="nav-link ">STEP3 ROADMAP</a>
+<a href="step4-teardown.html" class="nav-link ">STEP4 TEARDOWN</a>
+    </div>
+  </nav>
+
+  <main class="main-wrapper">
+    <article class="content">
+      <h1>🟠 AWS 가속기 및 CPU 플랫폼 로드맵 (Trainium & Graviton)</h1>
+
+<p>Amazon Web Services (AWS)는 클라우드 가속기 분야에서 가장 오랜 시간 맞춤형 실리콘(ASIC) 설계 경험을 축적해 왔습니다. 연산 가성비를 위한 <strong>Graviton CPU</strong> 시리즈와 AI 학습용 <strong>Trainium</strong>, 추론용 <strong>Inferentia</strong> 가속기를 병렬로 배치하여 클라우드 하드웨어 지배력을 강화하고 있습니다.</p>
+
+<hr>
+
+<h2>1. 대표 플랫폼 이미지</h2>
+<p>클라우드 가상 머신에 고밀도로 연산력을 제공하도록 최적화된 차세대 <strong>AWS Trainium2 / EC2 UltraCluster 가속 노드</strong>입니다.</p>
+
+<p><img src="./.vitepress/public/aws-trainium-server.jpg" alt="AWS Trainium2 Server" style="max-width: 480px; border-radius: 12px; margin: 20px 0; box-shadow: 0 8px 24px rgba(0,0,0,0.2);" /></p>
+
+<hr>
+
+<h2>2. AWS 커스텀 실리콘 로드맵 요약</h2>
+
+<h3>① AI 연산 가속기 (Trainium & Inferentia)</h3>
+
+<table><thead><tr>
+<th>출시 연도</th>
+<th>가속기 모델명</th>
+<th>주요 목적</th>
+<th>메모리 사양 (HBM)</th>
+<th>성능 및 클러스터 특징</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>2021</strong></td>
+<td><strong>AWS Inferentia2</strong></td>
+<td>AI 모델 추론 특화</td>
+<td>32GB HBM2</td>
+<td>지연 시간을 극소화한 실시간 추론 연산 지원, 가성비 위주.</td>
+</tr>
+<tr>
+<td><strong>2022</strong></td>
+<td><strong>AWS Trainium1</strong></td>
+<td>대규모 AI 모델 학습</td>
+<td>32GB HBM2</td>
+<td>Neuron SDK와 연계하여 최적의 학습 비용 실현.</td>
+</tr>
+<tr>
+<td><strong>2024~2025</strong></td>
+<td><strong>AWS Trainium2</strong></td>
+<td>초대형 LLM 학습</td>
+<td><strong>96GB HBM</strong></td>
+<td>1세대 대비 연산 성능 4배 향상, <strong>65,000개 칩</strong>을 울트라클러스터로 결합 가능.</td>
+</tr>
+</tbody></table>
+
+<h3>② 범용 서버 CPU (AWS Graviton)</h3>
+
+<table><thead><tr>
+<th>출시 연도</th>
+<th>CPU 모델명</th>
+<th>CPU 아키텍처 코어</th>
+<th>메모리 규격</th>
+<th>주요 특징 및 워크로드 성능</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>2021</strong></td>
+<td><strong>AWS Graviton3</strong></td>
+<td>ARM Neoverse V1 (64코어)</td>
+<td>DDR5</td>
+<td>기존 Graviton2 대비 연산 성능 25%, 부동소수점 연산 2배 향상.</td>
+</tr>
+<tr>
+<td><strong>2024</strong></td>
+<td><strong>AWS Graviton4</strong></td>
+<td>ARM Neoverse V2 (96코어)</td>
+<td>DDR5</td>
+<td>Graviton3 대비 성능 30%, 메모리 대역폭 75% 향상. 범용 서버 비용 절감 지배.</td>
+</tr>
+</tbody></table>
+
+<hr>
+
+<h2>3. 하드웨어 구성 및 기술적 차별성</h2>
+
+<p>AWS 커스텀 인프라가 지닌 아키텍처 특징입니다.</p>
+
+<ul>
+<li><strong>Neuron SDK 밀착 결합:</strong></li>
+</ul>
+<p>  PyTorch 및 TensorFlow 코드를 AWS 반도체 기계어로 컴파일해 주는 전용 컴파일러 라이브러리(Neuron SDK)를 상시 업데이트하여, 인프라 전환 시 빌드 에러 및 소프트웨어 호환성 마찰을 억제합니다.</p>
+<ul>
+<li><strong>EC2 UltraCluster 네트워킹:</strong></li>
+</ul>
+<p>  AWS는 자체 개발한 초지연성 네트워크 인터페이스 카드인 <strong>EFA (Elastic Fabric Adapter)</strong>와 가상화 전용 컨트롤러인 <strong>Nitro System</strong>을 결합하여, 6만 대 이상의 가속기 서버가 단일 공유 광대역 스위치처럼 움직이게 스케일 아웃을 지원합니다.</p>
+
+    </article>
+  </main>
+
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'default' });
+  </script>
+</body>
+</html>

@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📊 Step 2. 시장 인사이트 & Leading 기업 (Market Insights) | AI Server Wiki</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --bg-primary: #0b0f19;
+      --bg-secondary: #111827;
+      --bg-card: #1f2937;
+      --text-primary: #f9fafb;
+      --text-secondary: #9ca3af;
+      --text-muted: #6b7280;
+      --accent: #3b82f6;
+      --accent-hover: #60a5fa;
+      --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+      --border-color: #374151;
+      --code-bg: #111827;
+      --sidebar-width: 280px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.7;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Navigation */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: rgba(17, 24, 39, 0.8);
+      backdrop-filter: blur(12px);
+      border-right: 1px solid var(--border-color);
+      padding: 2rem 1.25rem;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      overflow-y: auto;
+      z-index: 10;
+    }
+
+    .brand {
+      font-size: 1.25rem;
+      font-weight: 700;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-group-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .nav-link:hover {
+      color: var(--text-primary);
+      background-color: rgba(59, 130, 246, 0.1);
+      transform: translateX(4px);
+    }
+
+    .nav-link.active {
+      color: #ffffff;
+      background: var(--accent-gradient);
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    /* Main Content */
+    .main-wrapper {
+      margin-left: var(--sidebar-width);
+      flex: 1;
+      padding: 3rem 4rem;
+      max-width: 1100px;
+    }
+
+    .content {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 3rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Typography & Elements */
+    h1, h2, h3, h4, h5, h6 {
+      color: var(--text-primary);
+      font-weight: 700;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      line-height: 1.3;
+    }
+
+    h1 {
+      font-size: 2.25rem;
+      margin-top: 0;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--border-color);
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    h2 {
+      font-size: 1.6rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    h3 { font-size: 1.25rem; }
+
+    p {
+      margin-bottom: 1.25rem;
+      color: #d1d5db;
+    }
+
+    a {
+      color: var(--accent-hover);
+      text-decoration: none;
+      transition: border-bottom 0.2s ease;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    ul, ol {
+      margin-bottom: 1.25rem;
+      padding-left: 1.5rem;
+      color: #d1d5db;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+
+    blockquote {
+      border-left: 4px solid var(--accent);
+      background: rgba(59, 130, 246, 0.05);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.25rem;
+      border-radius: 0 0.5rem 0.5rem 0;
+      color: #9ca3af;
+      font-style: italic;
+    }
+
+    code {
+      font-family: 'Fira Code', monospace;
+      background: var(--code-bg);
+      color: #f35b04;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.875em;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    pre {
+      background: var(--code-bg);
+      padding: 1.25rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border-color);
+    }
+
+    pre code {
+      background: transparent;
+      padding: 0;
+      border: none;
+      color: #e5e7eb;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.75rem;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border: 1px solid var(--border-color);
+    }
+
+    th {
+      background-color: var(--bg-card);
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    tr:nth-child(even) {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+
+    tr:hover {
+      background-color: rgba(59, 130, 246, 0.05);
+    }
+
+    hr {
+      border: 0;
+      height: 1px;
+      background: var(--border-color);
+      margin: 2rem 0;
+    }
+
+    /* Mermaid Container */
+    .mermaid {
+      background: #ffffff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    @media (max-width: 768px) {
+      body { flex-direction: column; }
+      .sidebar { width: 100%; position: relative; height: auto; }
+      .main-wrapper { margin-left: 0; padding: 1.5rem; }
+      .content { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="brand">⚡ AI Server Wiki</div>
+    <div class="nav-group-title">Documents</div>
+    <div class="nav-links">
+      <a href="ai-server-overview.html" class="nav-link ">AI SERVER OVERVIEW</a>
+<a href="amd-cpu-roadmap.html" class="nav-link ">AMD CPU ROADMAP</a>
+<a href="amd-roadmap.html" class="nav-link ">AMD ROADMAP</a>
+<a href="ampere-roadmap.html" class="nav-link ">AMPERE ROADMAP</a>
+<a href="api-examples.html" class="nav-link ">API EXAMPLES</a>
+<a href="aws-roadmap.html" class="nav-link ">AWS ROADMAP</a>
+<a href="cxl-overview.html" class="nav-link ">CXL OVERVIEW</a>
+<a href="dram-overview.html" class="nav-link ">DRAM OVERVIEW</a>
+<a href="gddr-overview.html" class="nav-link ">GDDR OVERVIEW</a>
+<a href="general-server-overview.html" class="nav-link ">GENERAL SERVER OVERVIEW</a>
+<a href="google-roadmap.html" class="nav-link ">GOOGLE ROADMAP</a>
+<a href="hbm-overview.html" class="nav-link ">HBM OVERVIEW</a>
+<a href="index.html" class="nav-link ">INDEX</a>
+<a href="intel-roadmap.html" class="nav-link ">INTEL ROADMAP</a>
+<a href="lpcamm-overview.html" class="nav-link ">LPCAMM OVERVIEW</a>
+<a href="markdown-examples.html" class="nav-link ">MARKDOWN EXAMPLES</a>
+<a href="mcrdimm-overview.html" class="nav-link ">MCRDIMM OVERVIEW</a>
+<a href="memory-overview.html" class="nav-link ">MEMORY OVERVIEW</a>
+<a href="nand-overview.html" class="nav-link ">NAND OVERVIEW</a>
+<a href="nvidia-blackwell.html" class="nav-link ">NVIDIA BLACKWELL</a>
+<a href="nvidia-hopper.html" class="nav-link ">NVIDIA HOPPER</a>
+<a href="nvidia-roadmap.html" class="nav-link ">NVIDIA ROADMAP</a>
+<a href="nvidia-rubin.html" class="nav-link ">NVIDIA RUBIN</a>
+<a href="rdimm-overview.html" class="nav-link ">RDIMM OVERVIEW</a>
+<a href="socamm-overview.html" class="nav-link ">SOCAMM OVERVIEW</a>
+<a href="step2-market.html" class="nav-link active">STEP2 MARKET</a>
+<a href="step3-roadmap.html" class="nav-link ">STEP3 ROADMAP</a>
+<a href="step4-teardown.html" class="nav-link ">STEP4 TEARDOWN</a>
+    </div>
+  </nav>
+
+  <main class="main-wrapper">
+    <article class="content">
+      <h1>📊 Step 2. 시장 인사이트 & Leading 기업 (Market Insights)</h1>
+
+<p>AI 서버 산업은 특정 선도 기업들의 독점적인 핵심 기술과 복잡하게 얽힌 글로벌 서플라이 체인(Supply Chain)을 중심으로 급변하고 있습니다. 이 페이지에서는 주요 핵심 영역별 선도 기업들의 포지셔닝과 시장 기회를 심층 분석합니다.</p>
+
+<hr>
+
+<h2>칩셋 (AI Accelerator) 시장 구도</h2>
+<p>현재 AI 가속기 시장은 독점적 강자와 강력한 도전자들 간의 생태계 경쟁 구도입니다.</p>
+
+<div class="mermaid">
+<p>graph TD</p>
+<p>    A[AI 가속기 시장] --> B[NVIDIA: CUDA 생태계 장악]</p>
+<p>    A --> C[AMD: 개방형 ROCm 및 가성비 추격]</p>
+<p>    A --> D[빅테크 자체 NPU: 비용 절감 및 최적화]</p>
+    
+<p>    B --> B1[시장 점유율 85%+]</p>
+<p>    C --> C1[MI300X / MI325X 고용량 HBM 승부]</p>
+<p>    D --> D1[Google TPU / AWS Trainium / MS Maia]</p>
+<p></div></p>
+
+<h3>1. NVIDIA (독점적 시장 지배자)</h3>
+<ul>
+<li><strong>시장 포지션:</strong> 글로벌 점유율 <strong>85~90%</strong> 차지.</li>
+<li><strong>핵심 경쟁력:</strong></li>
+<li><strong>CUDA (Compute Unified Device Architecture):</strong> 15년 이상 축적된 개발자 소프트웨어 생태계로, AI 개발 코드가 NVIDIA 칩셋에 완벽히 최적화되어 있어 타 칩셋으로의 전환 장벽(Switching Barrier)이 극도로 높음.</li>
+<li><strong>네트워킹 통합:</strong> Mellanox 인수를 통해 확보한 <strong>InfiniBand</strong> 및 <strong>NVLink</strong> 네트워킹 기술로, 수만 개의 GPU를 연결하여 단일 슈퍼컴퓨터처럼 작동시키는 클러스터링 기술력 독보적.</li>
+<li><strong>주요 과제:</strong> 높은 칩 가격(단일 서버 랙 수십억 원 선) 및 공급 부족으로 인한 빅테크 기업들의 자립화 시도 대응.</li>
+</ul>
+
+<h3>2. AMD (가장 현실적인 대안)</h3>
+<ul>
+<li><strong>시장 포지션:</strong> 글로벌 점유율 약 <strong>10%</strong> 내외로 추격 중.</li>
+<li><strong>핵심 경쟁력:</strong></li>
+<li><strong>압도적인 메모리 스펙:</strong> MI300X 및 MI325X 등에서 NVIDIA 경쟁 칩 대비 더 큰 용량과 넓은 대역폭의 HBM 메모리를 탑재하여 가성비와 초대형 모델 메모리 여유 제공.</li>
+<li><strong>ROCm 개방형 생태계:</strong> NVIDIA CUDA에 대항하여 오픈 소스 소프트웨어 플랫폼 개발에 총력, PyTorch 등 주요 프레임워크와의 호환성을 극대화하여 마이그레이션 장벽을 지속적으로 낮춤.</li>
+</ul>
+
+<h3>3. Big Tech CSP (자체 칩 내재화)</h3>
+<ul>
+<li><strong>주요 주체:</strong> Google, Amazon (AWS), Microsoft, Meta 등.</li>
+<li><strong>추진 동기:</strong> NVIDIA GPU의 엄청난 도입 단가 및 전력 소비 절감, 특정 서비스(검색, 광고 추천 등)에 최적화된 설계 적용.</li>
+<li><strong>대표 가속기:</strong> Google <strong>TPU v5p/v6</strong>, AWS <strong>Trainium2 / Inferentia2</strong>, Microsoft <strong>Maia 100</strong>.</li>
+</ul>
+
+<hr>
+
+<h2>2. 파운드리 & 어드밴스드 패키징 (TSMC CoWoS)</h2>
+<p>AI 가속기 칩 생산의 절대적 병목은 실리콘 웨이퍼 미세 공정뿐만 아니라, GPU와 HBM을 물리적으로 결합하는 <strong>어드밴스드 패키징(Advanced Packaging)</strong> 공정에 있습니다.</p>
+
+<table><thead><tr>
+<th>패키징 기술명</th>
+<th>주관사</th>
+<th>설명 및 영향력</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>CoWoS (Chip-on-Wafer-on-Substrate)</strong></td>
+<td><strong>TSMC</strong> (대만)</td>
+<td>GPU 연산 코어와 여러 개의 HBM 칩을 인터포저(Interposer)라는 실리콘 판 위에 미세하게 연결해 얹는 2.5D 패키징 기술. 사실상 NVIDIA Blackwell 등 하이엔드 AI 가속기의 생산량은 TSMC의 CoWoS 캐파(Capacity)에 완전히 종속됨.</td>
+</tr>
+<tr>
+<td><strong>I-Cube / X-Cube</strong></td>
+<td><strong>삼성전자</strong></td>
+<td>삼성전자가 자체 개발한 2.5D 및 3D 패키징 솔루션으로, HBM 칩 생산부터 패키징까지 일괄 제공하는 <strong>Turnkey(턴키) 서비스</strong>로 시장 점유율 확대를 꾀함.</td>
+</tr>
+</tbody></table>
+
+<hr>
+
+<h2>3. HBM (High Bandwidth Memory) 공급망</h2>
+<p>HBM은 D램 칩을 수직으로 적층하여 데이터 전송 통로(TSV)를 수천 개 뚫어 대역폭을 극대화한 초고속 메모리입니다. AI 가속기의 병목 해소를 위한 필수 부품입니다.</p>
+
+<ul>
+<li><strong>SK하이닉스 (시장 선두 주자):</strong></li>
+<li>독자적인 <strong>MR-MUF (Mass Reflow Molded Underfill)</strong> 공정 기술을 앞세워 Blackwell 등 NVIDIA 차세대 라인업의 주력 공급사 지위 유지. 열 방출과 생산 수율 면에서 선제적 도달.</li>
+<li><strong>삼성전자 (격렬한 추격):</strong></li>
+<li>12단 적층 HBM3e 등의 초대용량 포트폴리오를 기반으로 공급망 진입 가속화. 세계 최대 메모리 생산 캐파를 강점으로 대량 공급 시장 준비.</li>
+<li><strong>Micron (제3의 플레이어):</strong></li>
+<li>미국 본토 생산 및 정부 지원을 등에 업고 HBM3e 시장에 진입하여 공급선 다변화 수혜 획득.</li>
+</ul>
+
+<hr>
+
+<h2>💡 종합 마켓 인사이트</h2>
+<p>AI 서버 시장은 단순한 하드웨어 조립 시장이 아닌 <strong>[설계(NVIDIA) - 미세공정 및 패키징(TSMC) - 메모리(SK하이닉스/삼성) - 인프라 조립(Foxconn/Quanta)]</strong>로 이어지는 초정밀 가치 사슬입니다. 2026년 현재 HBM과 어드밴스드 패키징 공급 이슈가 해소됨에 따라 전력 공급 인프라 및 수랭식 냉각(Liquid Cooling)이 새로운 하드웨어 서플라이 체인의 핵심 병목이자 투자 기회로 떠오르고 있습니다.</p>
+
+    </article>
+  </main>
+
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'default' });
+  </script>
+</body>
+</html>

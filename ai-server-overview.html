@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ai-server-overview | AI Server Wiki</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --bg-primary: #0b0f19;
+      --bg-secondary: #111827;
+      --bg-card: #1f2937;
+      --text-primary: #f9fafb;
+      --text-secondary: #9ca3af;
+      --text-muted: #6b7280;
+      --accent: #3b82f6;
+      --accent-hover: #60a5fa;
+      --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+      --border-color: #374151;
+      --code-bg: #111827;
+      --sidebar-width: 280px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.7;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Navigation */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: rgba(17, 24, 39, 0.8);
+      backdrop-filter: blur(12px);
+      border-right: 1px solid var(--border-color);
+      padding: 2rem 1.25rem;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      overflow-y: auto;
+      z-index: 10;
+    }
+
+    .brand {
+      font-size: 1.25rem;
+      font-weight: 700;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-group-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .nav-link:hover {
+      color: var(--text-primary);
+      background-color: rgba(59, 130, 246, 0.1);
+      transform: translateX(4px);
+    }
+
+    .nav-link.active {
+      color: #ffffff;
+      background: var(--accent-gradient);
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    /* Main Content */
+    .main-wrapper {
+      margin-left: var(--sidebar-width);
+      flex: 1;
+      padding: 3rem 4rem;
+      max-width: 1100px;
+    }
+
+    .content {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 3rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Typography & Elements */
+    h1, h2, h3, h4, h5, h6 {
+      color: var(--text-primary);
+      font-weight: 700;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      line-height: 1.3;
+    }
+
+    h1 {
+      font-size: 2.25rem;
+      margin-top: 0;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--border-color);
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    h2 {
+      font-size: 1.6rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    h3 { font-size: 1.25rem; }
+
+    p {
+      margin-bottom: 1.25rem;
+      color: #d1d5db;
+    }
+
+    a {
+      color: var(--accent-hover);
+      text-decoration: none;
+      transition: border-bottom 0.2s ease;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    ul, ol {
+      margin-bottom: 1.25rem;
+      padding-left: 1.5rem;
+      color: #d1d5db;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+
+    blockquote {
+      border-left: 4px solid var(--accent);
+      background: rgba(59, 130, 246, 0.05);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.25rem;
+      border-radius: 0 0.5rem 0.5rem 0;
+      color: #9ca3af;
+      font-style: italic;
+    }
+
+    code {
+      font-family: 'Fira Code', monospace;
+      background: var(--code-bg);
+      color: #f35b04;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.875em;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    pre {
+      background: var(--code-bg);
+      padding: 1.25rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border-color);
+    }
+
+    pre code {
+      background: transparent;
+      padding: 0;
+      border: none;
+      color: #e5e7eb;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.75rem;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border: 1px solid var(--border-color);
+    }
+
+    th {
+      background-color: var(--bg-card);
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    tr:nth-child(even) {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+
+    tr:hover {
+      background-color: rgba(59, 130, 246, 0.05);
+    }
+
+    hr {
+      border: 0;
+      height: 1px;
+      background: var(--border-color);
+      margin: 2rem 0;
+    }
+
+    /* Mermaid Container */
+    .mermaid {
+      background: #ffffff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    @media (max-width: 768px) {
+      body { flex-direction: column; }
+      .sidebar { width: 100%; position: relative; height: auto; }
+      .main-wrapper { margin-left: 0; padding: 1.5rem; }
+      .content { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="brand">⚡ AI Server Wiki</div>
+    <div class="nav-group-title">Documents</div>
+    <div class="nav-links">
+      <a href="ai-server-overview.html" class="nav-link active">AI SERVER OVERVIEW</a>
+<a href="amd-cpu-roadmap.html" class="nav-link ">AMD CPU ROADMAP</a>
+<a href="amd-roadmap.html" class="nav-link ">AMD ROADMAP</a>
+<a href="ampere-roadmap.html" class="nav-link ">AMPERE ROADMAP</a>
+<a href="api-examples.html" class="nav-link ">API EXAMPLES</a>
+<a href="aws-roadmap.html" class="nav-link ">AWS ROADMAP</a>
+<a href="cxl-overview.html" class="nav-link ">CXL OVERVIEW</a>
+<a href="dram-overview.html" class="nav-link ">DRAM OVERVIEW</a>
+<a href="gddr-overview.html" class="nav-link ">GDDR OVERVIEW</a>
+<a href="general-server-overview.html" class="nav-link ">GENERAL SERVER OVERVIEW</a>
+<a href="google-roadmap.html" class="nav-link ">GOOGLE ROADMAP</a>
+<a href="hbm-overview.html" class="nav-link ">HBM OVERVIEW</a>
+<a href="index.html" class="nav-link ">INDEX</a>
+<a href="intel-roadmap.html" class="nav-link ">INTEL ROADMAP</a>
+<a href="lpcamm-overview.html" class="nav-link ">LPCAMM OVERVIEW</a>
+<a href="markdown-examples.html" class="nav-link ">MARKDOWN EXAMPLES</a>
+<a href="mcrdimm-overview.html" class="nav-link ">MCRDIMM OVERVIEW</a>
+<a href="memory-overview.html" class="nav-link ">MEMORY OVERVIEW</a>
+<a href="nand-overview.html" class="nav-link ">NAND OVERVIEW</a>
+<a href="nvidia-blackwell.html" class="nav-link ">NVIDIA BLACKWELL</a>
+<a href="nvidia-hopper.html" class="nav-link ">NVIDIA HOPPER</a>
+<a href="nvidia-roadmap.html" class="nav-link ">NVIDIA ROADMAP</a>
+<a href="nvidia-rubin.html" class="nav-link ">NVIDIA RUBIN</a>
+<a href="rdimm-overview.html" class="nav-link ">RDIMM OVERVIEW</a>
+<a href="socamm-overview.html" class="nav-link ">SOCAMM OVERVIEW</a>
+<a href="step2-market.html" class="nav-link ">STEP2 MARKET</a>
+<a href="step3-roadmap.html" class="nav-link ">STEP3 ROADMAP</a>
+<a href="step4-teardown.html" class="nav-link ">STEP4 TEARDOWN</a>
+    </div>
+  </nav>
+
+  <main class="main-wrapper">
+    <article class="content">
+      
+
+<p><style></p>
+<p>.overview-section-container {</p>
+<p>  display: flex;</p>
+<p>  flex-direction: column;</p>
+<p>  align-items: center;</p>
+<p>  margin: 30px 0;</p>
+<p>  text-align: center;</p>
+<p>  background-color: #ffffff !important;</p>
+<p>  padding: 24px;</p>
+<p>  border-radius: 12px;</p>
+<p>  border: 1px solid #e2e8f0;</p>
+<p>  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);</p>
+<p>}</p>
+<p>.chart-title {</p>
+<p>  font-size: 1.15rem;</p>
+<p>  font-weight: 700;</p>
+<p>  color: #1e293b !important;</p>
+<p>  margin-top: 0 !important;</p>
+<p>  margin-bottom: 24px !important;</p>
+<p>  border: none !important;</p>
+<p>  padding: 0 !important;</p>
+<p>}</p>
+<p>.pie-chart-wrapper {</p>
+<p>  display: flex;</p>
+<p>  flex-direction: column;</p>
+<p>  align-items: center;</p>
+<p>  margin-bottom: 5px;</p>
+<p>}</p>
+<p>.pie-chart-svg {</p>
+<p>  transform: rotate(-90deg);</p>
+<p>  border-radius: 50%;</p>
+<p>  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);</p>
+<p>  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);</p>
+<p>}</p>
+<p>.pie-chart-svg:hover {</p>
+<p>  transform: rotate(-90deg) scale(1.05);</p>
+<p>}</p>
+<p>.legend-row {</p>
+<p>  display: flex;</p>
+<p>  justify-content: center;</p>
+<p>  flex-wrap: wrap;</p>
+<p>  gap: 16px;</p>
+<p>  margin-top: 24px;</p>
+<p>  font-size: 0.85rem;</p>
+<p>}</p>
+<p>.legend-item {</p>
+<p>  display: flex;</p>
+<p>  align-items: center;</p>
+<p>  gap: 6px;</p>
+<p>  color: #334155 !important;</p>
+<p>  font-weight: 600;</p>
+<p>}</p>
+<p>.dot {</p>
+<p>  width: 10px;</p>
+<p>  height: 10px;</p>
+<p>  border-radius: 50%;</p>
+<p>}</p>
+<p>.custom-btn {</p>
+<p>  transition: transform 0.2s, filter 0.2s, box-shadow 0.2s;</p>
+<p>}</p>
+<p>.custom-btn:hover {</p>
+<p>  transform: translateY(-2px);</p>
+<p>  filter: brightness(1.15);</p>
+<p>  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);</p>
+<p>}</p>
+<p></style></p>
+
+<h2>🥧 Section 1. 글로벌 AI 가속기 시장 점유율 (Market Share)</h2>
+
+<p>AI 서버의 핵심 원가와 성능을 좌우하는 AI 연산 칩(GPU/NPU 등 가속기) 시장의 주요 플레이어 점유율입니다. </p>
+
+<div class="overview-section-container">
+  <h4 class="chart-title">2026 글로벌 AI 가속기(GPU/NPU) 시장 점유율 (추정치)</h4>
+  <div class="pie-chart-wrapper">
+<p>    <svg width="200" height="200" viewBox="0 0 100 100" class="pie-chart-svg"></p>
+<p>      <circle cx="50" cy="50" r="25" fill="none" stroke="#76b900" stroke-width="50" stroke-dasharray="133.52 157.08" stroke-dashoffset="0" /></p>
+<p>      <circle cx="50" cy="50" r="25" fill="none" stroke="#ED1C24" stroke-width="50" stroke-dasharray="15.71 157.08" stroke-dashoffset="-133.52" /></p>
+<p>      <circle cx="50" cy="50" r="25" fill="none" stroke="#4285F4" stroke-width="50" stroke-dasharray="4.71 157.08" stroke-dashoffset="-149.23" /></p>
+<p>      <circle cx="50" cy="50" r="25" fill="none" stroke="#FF9900" stroke-width="50" stroke-dasharray="3.14 157.08" stroke-dashoffset="-153.94" /></p>
+<p>    </svg></p>
+    <div class="legend-row">
+      <div class="legend-item"><span class="dot" style="background-color: #76b900; box-shadow: 0 0 8px rgba(118, 185, 0, 0.6);"></span> NVIDIA (85%)</div>
+      <div class="legend-item"><span class="dot" style="background-color: #ED1C24; box-shadow: 0 0 8px rgba(237, 28, 36, 0.6);"></span> AMD (10%)</div>
+      <div class="legend-item"><span class="dot" style="background-color: #4285F4; box-shadow: 0 0 8px rgba(66, 133, 244, 0.6);"></span> Google (3%)</div>
+      <div class="legend-item"><span class="dot" style="background-color: #FF9900; box-shadow: 0 0 8px rgba(255, 153, 0, 0.6);"></span> AWS & 기타 (2%)</div>
+<p>    </div></p>
+<p>  </div></p>
+<p></div></p>
+
+<p>👇 <strong>아래 기업 버튼을 클릭하시면 [Step 3. 주요 기업별 로드맵] 페이지로 이동하여 상세 전략을 확인할 수 있습니다.</strong></p>
+
+<div style="display: flex; gap: 12px; margin: 20px 0; justify-content: center; flex-wrap: wrap;">
+<p>  <a href="/nvidia-roadmap" style="padding: 10px 20px; background-color: #76b900; color: white; border-radius: 6px; text-decoration: none; font-weight: bold; cursor: pointer; text-align: center;" class="custom-btn">NVIDIA 로드맵</a></p>
+<p>  <a href="/amd-roadmap" style="padding: 10px 20px; background-color: #ED1C24; color: white; border-radius: 6px; text-decoration: none; font-weight: bold; cursor: pointer; text-align: center;" class="custom-btn">AMD 로드맵</a></p>
+<p>  <a href="/google-roadmap" style="padding: 10px 20px; background-color: #4285F4; color: white; border-radius: 6px; text-decoration: none; font-weight: bold; cursor: pointer; text-align: center;" class="custom-btn">Google (TPU)</a></p>
+<p>  <a href="/aws-roadmap" style="padding: 10px 20px; background-color: #FF9900; color: white; border-radius: 6px; text-decoration: none; font-weight: bold; cursor: pointer; text-align: center;" class="custom-btn">AWS (Trainium)</a></p>
+<p></div></p>
+
+
+<hr>
+
+<h2>📈 Section 2. AI 서버 시장 규모 및 성장률 (Market Size)</h2>
+
+<p>글로벌 AI 서버 출하량 및 가치 성장 추이입니다. (막대에 마우스를 올리면 상세 수치가 표시됩니다.)</p>
+
+<div style="display: flex; align-items: flex-end; justify-content: space-between; height: 300px; border-bottom: 2px solid #555; padding-bottom: 10px; margin: 40px 0;">
+<p>  <!-- 2023 --></p>
+  <div style="display: flex; flex-direction: column; align-items: center; justify-content: flex-end; width: 100%; height: 100%;">
+    <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 8px;">$45B</div>
+    <div style="width: 25px; height: 7.5%; background-color: #76b900; border-radius: 4px 4px 0 0; cursor: pointer;" title="2023년 시장 규모: $45B"></div>
+    <div style="font-size: 0.85rem; margin-top: 12px; color: #888;">2023</div>
+<p>  </div></p>
+<p>  <!-- 2024 --></p>
+  <div style="display: flex; flex-direction: column; align-items: center; justify-content: flex-end; width: 100%; height: 100%;">
+    <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 8px;">$98B</div>
+    <div style="width: 25px; height: 16.3%; background-color: #76b900; border-radius: 4px 4px 0 0; cursor: pointer;" title="2024년 시장 규모: $98B"></div>
+    <div style="font-size: 0.85rem; margin-top: 12px; color: #888;">2024</div>
+<p>  </div></p>
+<p>  <!-- 2025 --></p>
+  <div style="display: flex; flex-direction: column; align-items: center; justify-content: flex-end; width: 100%; height: 100%;">
+    <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 8px;">$150B</div>
+    <div style="width: 25px; height: 25%; background-color: #76b900; border-radius: 4px 4px 0 0; cursor: pointer;" title="2025년 시장 규모: $150B"></div>
+    <div style="font-size: 0.85rem; margin-top: 12px; color: #888;">2025</div>
+<p>  </div></p>
+<p>  <!-- 2026 --></p>
+  <div style="display: flex; flex-direction: column; align-items: center; justify-content: flex-end; width: 100%; height: 100%;">
+    <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 8px;">$210B</div>
+    <div style="width: 25px; height: 35%; background-color: #76b900; border-radius: 4px 4px 0 0; cursor: pointer;" title="2026년 시장 규모: $210B"></div>
+    <div style="font-size: 0.85rem; margin-top: 12px; color: #888;">2026</div>
+<p>  </div></p>
+<p>  <!-- 2027 --></p>
+  <div style="display: flex; flex-direction: column; align-items: center; justify-content: flex-end; width: 100%; height: 100%;">
+    <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 8px;">$280B</div>
+    <div style="width: 25px; height: 46.6%; background-color: #76b900; border-radius: 4px 4px 0 0; cursor: pointer;" title="2027년(E) 시장 규모: $280B"></div>
+    <div style="font-size: 0.85rem; margin-top: 12px; color: #888;">2027(E)</div>
+<p>  </div></p>
+<p>  <!-- 2028 --></p>
+  <div style="display: flex; flex-direction: column; align-items: center; justify-content: flex-end; width: 100%; height: 100%;">
+    <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 8px;">$360B</div>
+    <div style="width: 25px; height: 60%; background-color: #76b900; border-radius: 4px 4px 0 0; cursor: pointer;" title="2028년(E) 시장 규모: $360B"></div>
+    <div style="font-size: 0.85rem; margin-top: 12px; color: #888;">2028(E)</div>
+<p>  </div></p>
+<p>  <!-- 2029 --></p>
+  <div style="display: flex; flex-direction: column; align-items: center; justify-content: flex-end; width: 100%; height: 100%;">
+    <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 8px;">$450B</div>
+    <div style="width: 25px; height: 75%; background-color: #76b900; border-radius: 4px 4px 0 0; cursor: pointer;" title="2029년(E) 시장 규모: $450B"></div>
+    <div style="font-size: 0.85rem; margin-top: 12px; color: #888;">2029(E)</div>
+<p>  </div></p>
+<p>  <!-- 2030 --></p>
+  <div style="display: flex; flex-direction: column; align-items: center; justify-content: flex-end; width: 100%; height: 100%;">
+    <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 8px;">$550B</div>
+    <div style="width: 25px; height: 91.6%; background-color: #76b900; border-radius: 4px 4px 0 0; cursor: pointer;" title="2030년(E) 시장 규모: $550B"></div>
+    <div style="font-size: 0.85rem; margin-top: 12px; color: #888;">2030(E)</div>
+<p>  </div></p>
+<p></div></p>
+
+<blockquote><strong>Insight:</strong> 2023년 초거대 LLM의 등장 이후 생성형 AI 시장이 개화하면서 AI 서버 시장은 매년 급격히 팽창하고 있습니다. 특히 2026년 현재는 학습뿐만 아니라 실시간 서빙을 위한 '추론(Inference)' 수요가 시장을 강력하게 견인 중이며, 2030년까지 지속적인 고도성장이 전망됩니다.</blockquote>
+<hr>
+
+
+<h2>🧠 Section 3. AI 서버 하드웨어 아키텍처 (Hardware Structure)</h2>
+
+<p>단일 AI 서버 랙(Rack) 내부에 구성되는 핵심 하드웨어 컴포넌트 구조입니다. <strong>메모리 계층(Memory)</strong> 노드 및 아래 버튼을 클릭하시면 상세 <a href="/memory-overview">Memory Overview</a> 페이지로 이동합니다.</p>
+
+<p>``<code>mermaid</p>
+<p>flowchart TD</p>
+<p>    classDef rootStyle fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff,font-weight:bold;</p>
+<p>    classDef memoryStyle fill:#0284c7,stroke:#38bdf8,stroke-width:2px,color:#fff,font-weight:bold,cursor:pointer;</p>
+<p>    classDef nodeStyle fill:#0f172a,stroke:#334155,color:#e2e8f0;</p>
+
+<p>    Root(("AI 서버<br/>핵심 구조")):::rootStyle</p>
+    
+<p>    Compute["💻 연산 장치 (Compute)"]:::nodeStyle</p>
+<p>    Memory["💾 메모리 계층 (Memory Overview ↗)"]:::memoryStyle</p>
+<p>    Interconnect["⚡ 초고속 상호연결 (Interconnect)"]:::nodeStyle</p>
+<p>    Infra["❄️ 전력 및 냉각 (Infrastructure)"]:::nodeStyle</p>
+
+<p>    Root --> Compute</p>
+<p>    Root --> Memory</p>
+<p>    Root --> Interconnect</p>
+<p>    Root --> Infra</p>
+
+<p>    Compute --> GPU["GPU / NPU (병렬 연산 코어)"]</p>
+<p>    Compute --> CPU["Host CPU (데이터 제어 및 할당)"]</p>
+
+<p>    Memory --> HBM["HBM (고대역폭 메모리) ↗"]:::memoryStyle</p>
+<p>    Memory --> DDR5["DDR5 (시스템 메인 메모리) ↗"]:::memoryStyle</p>
+
+<p>    Interconnect --> NVLink["NVLink / NVSwitch (GPU 병목 해소)"]</p>
+<p>    Interconnect --> PCIe["PCIe Gen5 / Gen6 (시스템 버스)"]</p>
+<p>    Interconnect --> IB["InfiniBand / Ultra Ethernet"]</p>
+
+<p>    Infra --> Liquid["수랭식 시스템 (Liquid Cooling)"]</p>
+<p>    Infra --> PSU["고효율 파워 서플라이"]</p>
+
+<p>    click Memory "/memory-overview" "Memory Overview 페이지로 이동"</p>
+<p>    click HBM "/memory-overview" "Memory Overview 페이지로 이동"</p>
+<p>    click DDR5 "/memory-overview" "Memory Overview 페이지로 이동"</p>
+<p></code>``</p>
+
+<div style="display: flex; justify-content: center; margin: 20px 0;">
+<p>  <a href="/memory-overview" style="padding: 12px 24px; background-color: #0284c7; color: white; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);" class="custom-btn"></p>
+<p>    💾 Memory Overview (DRAM/NAND 시장 및 기술 로드맵) 분석 이동 ↗</p>
+<p>  </a></p>
+<p></div></p>
+    </article>
+  </main>
+
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'default' });
+  </script>
+</body>
+</html>

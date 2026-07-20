@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>index | AI Server Wiki</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --bg-primary: #0b0f19;
+      --bg-secondary: #111827;
+      --bg-card: #1f2937;
+      --text-primary: #f9fafb;
+      --text-secondary: #9ca3af;
+      --text-muted: #6b7280;
+      --accent: #3b82f6;
+      --accent-hover: #60a5fa;
+      --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+      --border-color: #374151;
+      --code-bg: #111827;
+      --sidebar-width: 280px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.7;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Navigation */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: rgba(17, 24, 39, 0.8);
+      backdrop-filter: blur(12px);
+      border-right: 1px solid var(--border-color);
+      padding: 2rem 1.25rem;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      overflow-y: auto;
+      z-index: 10;
+    }
+
+    .brand {
+      font-size: 1.25rem;
+      font-weight: 700;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-group-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .nav-link:hover {
+      color: var(--text-primary);
+      background-color: rgba(59, 130, 246, 0.1);
+      transform: translateX(4px);
+    }
+
+    .nav-link.active {
+      color: #ffffff;
+      background: var(--accent-gradient);
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    /* Main Content */
+    .main-wrapper {
+      margin-left: var(--sidebar-width);
+      flex: 1;
+      padding: 3rem 4rem;
+      max-width: 1100px;
+    }
+
+    .content {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 3rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Typography & Elements */
+    h1, h2, h3, h4, h5, h6 {
+      color: var(--text-primary);
+      font-weight: 700;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      line-height: 1.3;
+    }
+
+    h1 {
+      font-size: 2.25rem;
+      margin-top: 0;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--border-color);
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    h2 {
+      font-size: 1.6rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    h3 { font-size: 1.25rem; }
+
+    p {
+      margin-bottom: 1.25rem;
+      color: #d1d5db;
+    }
+
+    a {
+      color: var(--accent-hover);
+      text-decoration: none;
+      transition: border-bottom 0.2s ease;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    ul, ol {
+      margin-bottom: 1.25rem;
+      padding-left: 1.5rem;
+      color: #d1d5db;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+
+    blockquote {
+      border-left: 4px solid var(--accent);
+      background: rgba(59, 130, 246, 0.05);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.25rem;
+      border-radius: 0 0.5rem 0.5rem 0;
+      color: #9ca3af;
+      font-style: italic;
+    }
+
+    code {
+      font-family: 'Fira Code', monospace;
+      background: var(--code-bg);
+      color: #f35b04;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.875em;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    pre {
+      background: var(--code-bg);
+      padding: 1.25rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border-color);
+    }
+
+    pre code {
+      background: transparent;
+      padding: 0;
+      border: none;
+      color: #e5e7eb;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.75rem;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border: 1px solid var(--border-color);
+    }
+
+    th {
+      background-color: var(--bg-card);
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    tr:nth-child(even) {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+
+    tr:hover {
+      background-color: rgba(59, 130, 246, 0.05);
+    }
+
+    hr {
+      border: 0;
+      height: 1px;
+      background: var(--border-color);
+      margin: 2rem 0;
+    }
+
+    /* Mermaid Container */
+    .mermaid {
+      background: #ffffff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    @media (max-width: 768px) {
+      body { flex-direction: column; }
+      .sidebar { width: 100%; position: relative; height: auto; }
+      .main-wrapper { margin-left: 0; padding: 1.5rem; }
+      .content { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="brand">⚡ AI Server Wiki</div>
+    <div class="nav-group-title">Documents</div>
+    <div class="nav-links">
+      <a href="ai-server-overview.html" class="nav-link ">AI SERVER OVERVIEW</a>
+<a href="amd-cpu-roadmap.html" class="nav-link ">AMD CPU ROADMAP</a>
+<a href="amd-roadmap.html" class="nav-link ">AMD ROADMAP</a>
+<a href="ampere-roadmap.html" class="nav-link ">AMPERE ROADMAP</a>
+<a href="api-examples.html" class="nav-link ">API EXAMPLES</a>
+<a href="aws-roadmap.html" class="nav-link ">AWS ROADMAP</a>
+<a href="cxl-overview.html" class="nav-link ">CXL OVERVIEW</a>
+<a href="dram-overview.html" class="nav-link ">DRAM OVERVIEW</a>
+<a href="gddr-overview.html" class="nav-link ">GDDR OVERVIEW</a>
+<a href="general-server-overview.html" class="nav-link ">GENERAL SERVER OVERVIEW</a>
+<a href="google-roadmap.html" class="nav-link ">GOOGLE ROADMAP</a>
+<a href="hbm-overview.html" class="nav-link ">HBM OVERVIEW</a>
+<a href="index.html" class="nav-link active">INDEX</a>
+<a href="intel-roadmap.html" class="nav-link ">INTEL ROADMAP</a>
+<a href="lpcamm-overview.html" class="nav-link ">LPCAMM OVERVIEW</a>
+<a href="markdown-examples.html" class="nav-link ">MARKDOWN EXAMPLES</a>
+<a href="mcrdimm-overview.html" class="nav-link ">MCRDIMM OVERVIEW</a>
+<a href="memory-overview.html" class="nav-link ">MEMORY OVERVIEW</a>
+<a href="nand-overview.html" class="nav-link ">NAND OVERVIEW</a>
+<a href="nvidia-blackwell.html" class="nav-link ">NVIDIA BLACKWELL</a>
+<a href="nvidia-hopper.html" class="nav-link ">NVIDIA HOPPER</a>
+<a href="nvidia-roadmap.html" class="nav-link ">NVIDIA ROADMAP</a>
+<a href="nvidia-rubin.html" class="nav-link ">NVIDIA RUBIN</a>
+<a href="rdimm-overview.html" class="nav-link ">RDIMM OVERVIEW</a>
+<a href="socamm-overview.html" class="nav-link ">SOCAMM OVERVIEW</a>
+<a href="step2-market.html" class="nav-link ">STEP2 MARKET</a>
+<a href="step3-roadmap.html" class="nav-link ">STEP3 ROADMAP</a>
+<a href="step4-teardown.html" class="nav-link ">STEP4 TEARDOWN</a>
+    </div>
+  </nav>
+
+  <main class="main-wrapper">
+    <article class="content">
+      <hr>
+<p>layout: home</p>
+<p>hero:</p>
+<p>  name: "Carlson's Server Industry Wiki"</p>
+<p>  tagline: "글로벌 서버 아키텍처 및 차세대 AI 가속기 기술 분석 위키"</p>
+<p>  actions:</p>
+<ul>
+<li>theme: brand</li>
+</ul>
+<p>      text: "⚡ AI Server Overview"</p>
+<p>      link: /ai-server-overview</p>
+<ul>
+<li>theme: brand</li>
+</ul>
+<p>      text: "⚙️ General Server Overview"</p>
+<p>      link: /general-server-overview</p>
+<hr>
+
+<div class="wiki-container">
+
+
+<p><!-- =========================================</p>
+<p>     서버 부문별 개요 진입 포털</p>
+<p>     ========================================= --></p>
+<div class="section-header">
+<p><span>🧭 서버 인프라 부문별 개요 (Overview Portal)</span></p>
+<p></div></p>
+<div class="portal-grid" style="grid-template-columns: repeat(3, 1fr) !important;">
+<p><a href="/ai-server-overview" class="portal-card" style="border-color: rgba(57, 255, 20, 0.2);"></p>
+<div class="portal-card-header">
+<p><span class="portal-card-icon">⚡</span></p>
+<p><span class="portal-card-title">AI Server Overview</span></p>
+<p></div></p>
+<p><p class="portal-card-description"></p>
+<p>인공지능 학습 및 추론을 위한 가속기(GPU/NPU) 기반 서버 플랫폼. 가속기 시장 점유율, 2023-2030 시장 규모 분석, 대표 플레이어 로드맵 및 물리 아키텍처 정보 수록.</p>
+<p></p></p>
+<div class="portal-card-footer" style="color: var(--color-ai-green);">
+<p><span>AI 서버 개요 열기</span></p>
+<p><span>→</span></p>
+<p></div></p>
+<p></a></p>
+
+<p><a href="/general-server-overview" class="portal-card" style="border-color: rgba(57, 255, 20, 0.2);"></p>
+<div class="portal-card-header">
+<p><span class="portal-card-icon">⚙️</span></p>
+<p><span class="portal-card-title">General Server Overview</span></p>
+<p></div></p>
+<p><p class="portal-card-description"></p>
+<p>기존 데이터센터 및 클라우드 연산을 위한 범용 CPU 기반 서버 플랫폼. CPU 프로세서 시장 점유율, 2023-2030 시장 규모 분석, 로드맵 및 하드웨어 구성 요소 수록.</p>
+<p></p></p>
+<div class="portal-card-footer" style="color: var(--color-ai-green);">
+<p><span>일반 서버 개요 열기</span></p>
+<p><span>→</span></p>
+<p></div></p>
+<p></a></p>
+
+<p><a href="/memory-overview" class="portal-card" style="border-color: rgba(56, 189, 248, 0.3);"></p>
+<div class="portal-card-header">
+<p><span class="portal-card-icon">💾</span></p>
+<p><span class="portal-card-title">Memory Overview</span></p>
+<p></div></p>
+<p><p class="portal-card-description"></p>
+<p>글로벌 DRAM 및 NAND Flash 메모리 시장 점유율, 2023-2030 시장 규모 성장률(CAGR), 주요 제조사별(삼성, SK하이닉스, 마이크론 등) 선단 공정 및 HBM4 로드맵 수록.</p>
+<p></p></p>
+<div class="portal-card-footer" style="color: #38bdf8;">
+<p><span>메모리 개요 열기</span></p>
+<p><span>→</span></p>
+<p></div></p>
+<p></a></p>
+<p></div></p>
+
+<p><!-- =========================================</p>
+<p>     아키텍처 비교 및 시장 분석 테이블/차트</p>
+<p>     ========================================= --></p>
+<div class="section-header">
+<p><span>📊 인프라 비교 및 글로벌 시장 추이</span></p>
+<p></div></p>
+
+<div class="wiki-grid">
+
+<p><!-- Point 1. AI Server vs General Server 아키텍처 비교 --></p>
+<div class="tech-card">
+<div class="tech-card-title">
+<p><span>📊 AI Server vs General Server 차이점</span></p>
+<p></div></p>
+<p><p style="font-size: 0.9rem; color: #cbd5e1; margin-top: -10px; margin-bottom: 16px; line-height: 1.5;"></p>
+<p>일반 서버와 AI 서버는 아키텍처 관점에서 완전히 다른 병목 극복 구조와 연산 장치를 채택하고 있습니다. 아래 표는 두 플랫폼 간의 핵심적인 하드웨어 설계 차이점을 비교합니다.</p>
+<p></p></p>
+<table>
+<p><thead></p>
+<p><tr></p>
+<p><th style="text-align: left;">분류</th></p>
+<p><th style="text-align: left;">일반 서버 (General Server)</th></p>
+<p><th style="text-align: left;">AI 서버 (AI Server)</th></p>
+<p></tr></p>
+<p></thead></p>
+<p><tbody></p>
+<p><tr></p>
+<p><td><strong>주연산 장치</strong></td></p>
+<p><td><strong>CPU</strong> 중심 (Xeon, EPYC 등)</td></p>
+<p><td><strong>GPU / NPU</strong> 중심 (Blackwell, Instinct 등)</td></p>
+<p></tr></p>
+<p><tr></p>
+<p><td><strong>연산 방식</strong></td></p>
+<p><td>고성능 연산 중심, <strong>직렬 처리</strong> (논리 제어)</td></p>
+<p><td>수만 개 코어 활용, <strong>초대규모 병렬 처리</strong></td></p>
+<p></tr></p>
+<p><tr></p>
+<p><td><strong>메모리</strong></td></p>
+<p><td>범용 DDR5 RAM (고용량, 중대역폭)</td></p>
+<p><td><strong>HBM (고대역폭 메모리)</strong> 필수 탑재</td></p>
+<p></tr></p>
+<p><tr></p>
+<p><td><strong>상호 연결</strong></td></p>
+<p><td>범용 PCIe 버스 아키텍처 (대역폭 제한)</td></p>
+<p><td>초고속 상호 연결 전용 버스 (<strong>NVLink</strong> 등)</td></p>
+<p></tr></p>
+<p><tr></p>
+<p><td><strong>전력 및 냉각</strong></td></p>
+<p><td>서버당 500W ~ 1kW / <strong>공랭</strong> 위주</td></p>
+<p><td>서버당 4kW ~ 10kW 이상 / <strong>수랭</strong> 필수</td></p>
+<p></tr></p>
+<p><tr></p>
+<p><td><strong>대당 가격</strong></td></p>
+<p><td>수백만 원 ~ 수천만 원 선</td></p>
+<p><td>최소 3억 ~ 5억 원 이상 (인프라 랙 단위 수십억)</td></p>
+<p></tr></p>
+<p></tbody></p>
+<p></table></p>
+<p></div></p>
+
+<p><!-- Point 2. 시장 규모 비교 차트 (Market Size) --></p>
+<div class="tech-card">
+<div class="tech-card-title">
+<p><span>📈 글로벌 서버 시장 규모 추이 ($B)</span></p>
+<p></div></p>
+<div class="chart-scroll-area">
+<div class="chart-outer-wrapper">
+<div class="chart-legend-row">
+<div class="legend-chip">
+<p><span class="chip-color chip-general"></span></p>
+<p><span>General Server ($B)</span></p>
+<p></div></p>
+<div class="legend-chip">
+<p><span class="chip-color chip-ai"></span></p>
+<p><span>AI Server ($B)</span></p>
+<p></div></p>
+<p></div></p>
+<div class="chart-canvas">
+<div class="y-axis-labels">
+<div>$600B</div>
+<div>$450B</div>
+<div>$300B</div>
+<div>$150B</div>
+<div>$0</div>
+<p></div></p>
+<div class="chart-plot-container">
+<div class="chart-grid-lines">
+<div class="grid-horizontal-line"></div>
+<div class="grid-horizontal-line"></div>
+<div class="grid-horizontal-line"></div>
+<div class="grid-horizontal-line"></div>
+<div class="grid-horizontal-line" style="border-top-style: solid; border-top-color: rgba(255,255,255,0.15)"></div>
+<p></div></p>
+<div class="bars-flex-container">
+<div class="group-column">
+<div class="bars-pair">
+<div class="bar-box">
+<p><span class="label-val label-val-general">110</span></p>
+<div class="bar-shape bar-shape-general" style="height: 13.8%;"></div>
+<p></div></p>
+<div class="bar-box">
+<p><span class="label-val label-val-ai">45</span></p>
+<div class="bar-shape bar-shape-ai" style="height: 5.6%;"></div>
+<p></div></p>
+<p></div></p>
+<div class="x-axis-lbl">2023</div>
+<p></div></p>
+<div class="group-column">
+<div class="bars-pair">
+<div class="bar-box">
+<p><span class="label-val label-val-general">115</span></p>
+<div class="bar-shape bar-shape-general" style="height: 14.4%;"></div>
+<p></div></p>
+<div class="bar-box">
+<p><span class="label-val label-val-ai">98</span></p>
+<div class="bar-shape bar-shape-ai" style="height: 12.3%;"></div>
+<p></div></p>
+<p></div></p>
+<div class="x-axis-lbl">2024</div>
+<p></div></p>
+<div class="group-column">
+<div class="bars-pair" style="position: relative;">
+<div class="crossover-label-badge" style="position: absolute; bottom: calc(18.8% + 18px); left: 50%; transform: translateX(-50%); z-index: 5; margin: 0; white-space: nowrap;">Crossover</div>
+<div class="bar-box">
+<p><span class="label-val label-val-general">120</span></p>
+<div class="bar-shape bar-shape-general" style="height: 15.0%;"></div>
+<p></div></p>
+<div class="bar-box">
+<p><span class="label-val label-val-ai">150</span></p>
+<div class="bar-shape bar-shape-ai" style="height: 18.8%;"></div>
+<p></div></p>
+<p></div></p>
+<div class="x-axis-lbl">2025 (E)</div>
+<p></div></p>
+<div class="group-column">
+<div class="bars-pair">
+<div class="bar-box">
+<p><span class="label-val label-val-general">125</span></p>
+<div class="bar-shape bar-shape-general" style="height: 15.6%;"></div>
+<p></div></p>
+<div class="bar-box">
+<p><span class="label-val label-val-ai">210</span></p>
+<div class="bar-shape bar-shape-ai" style="height: 26.3%;"></div>
+<p></div></p>
+<p></div></p>
+<div class="x-axis-lbl">2026 (E)</div>
+<p></div></p>
+<div class="group-column">
+<div class="bars-pair">
+<div class="bar-box">
+<p><span class="label-val label-val-general">132</span></p>
+<div class="bar-shape bar-shape-general" style="height: 16.5%;"></div>
+<p></div></p>
+<div class="bar-box">
+<p><span class="label-val label-val-ai">280</span></p>
+<div class="bar-shape bar-shape-ai" style="height: 35.0%;"></div>
+<p></div></p>
+<p></div></p>
+<div class="x-axis-lbl">2027 (E)</div>
+<p></div></p>
+<div class="group-column">
+<div class="bars-pair">
+<div class="bar-box">
+<p><span class="label-val label-val-general">140</span></p>
+<div class="bar-shape bar-shape-general" style="height: 17.5%;"></div>
+<p></div></p>
+<div class="bar-box">
+<p><span class="label-val label-val-ai">360</span></p>
+<div class="bar-shape bar-shape-ai" style="height: 45.0%;"></div>
+<p></div></p>
+<p></div></p>
+<div class="x-axis-lbl">2028 (E)</div>
+<p></div></p>
+<div class="group-column">
+<div class="bars-pair">
+<div class="bar-box">
+<p><span class="label-val label-val-general">150</span></p>
+<div class="bar-shape bar-shape-general" style="height: 18.8%;"></div>
+<p></div></p>
+<div class="bar-box">
+<p><span class="label-val label-val-ai">450</span></p>
+<div class="bar-shape bar-shape-ai" style="height: 56.3%;"></div>
+<p></div></p>
+<p></div></p>
+<div class="x-axis-lbl">2029 (E)</div>
+<p></div></p>
+<div class="group-column">
+<div class="bars-pair">
+<div class="bar-box">
+<p><span class="label-val label-val-general">164</span></p>
+<div class="bar-shape bar-shape-general" style="height: 20.5%;"></div>
+<p></div></p>
+<div class="bar-box">
+<p><span class="label-val label-val-ai">550</span></p>
+<div class="bar-shape bar-shape-ai" style="height: 68.8%;"></div>
+<p></div></p>
+<p></div></p>
+<div class="x-axis-lbl">2030 (E)</div>
+<p></div></p>
+<p></div></p>
+<p></div></p>
+<p></div></p>
+<p></div></p>
+<p></div></p>
+<p><p style="font-size: 0.9rem; color: #cbd5e1; margin-top: 16px; margin-bottom: 16px; line-height: 1.5;"></p>
+<p>2023년부터 2030년(E)까지의 글로벌 서버 시장 투자 추정치 비교입니다. <strong>2025년을 분기점으로 두 시장 규모가 교차(Crossover)</strong>하는 대전환의 흐름을 확인하실 수 있습니다.</p>
+<p></p></p>
+<div class="insight-box">
+<div class="insight-box-title">
+<p><span>💡 Market Insight</span></p>
+<p></div></p>
+<p><p class="insight-box-text"></p>
+<p>거대 언어 모델(LLM) 및 실시간 추론 연산 수요 증가에 따른 AI 인프라 투자 폭발로 인해 <strong>2025년을 기점으로 AI 서버 시장이 일반 서버 시장을 완전히 추월(Crossover)</strong>합니다. 2030년(E)에 이르러서는 AI 서버 시장이 약 $550B 규모에 육박하며 글로벌 데이터센터 인프라 투자의 절대적 축(약 77%)으로 완벽히 자리 잡을 것입니다.</p>
+<p></p></p>
+<p></div></p>
+<p></div></p>
+
+<p></div> <!-- end of wiki-grid --></p>
+
+<p></div></p>
+
+    </article>
+  </main>
+
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'default' });
+  </script>
+</body>
+</html>

@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔵 Intel 서버 CPU 및 Gaudi 가속기 로드맵 | AI Server Wiki</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --bg-primary: #0b0f19;
+      --bg-secondary: #111827;
+      --bg-card: #1f2937;
+      --text-primary: #f9fafb;
+      --text-secondary: #9ca3af;
+      --text-muted: #6b7280;
+      --accent: #3b82f6;
+      --accent-hover: #60a5fa;
+      --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+      --border-color: #374151;
+      --code-bg: #111827;
+      --sidebar-width: 280px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.7;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Navigation */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: rgba(17, 24, 39, 0.8);
+      backdrop-filter: blur(12px);
+      border-right: 1px solid var(--border-color);
+      padding: 2rem 1.25rem;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      overflow-y: auto;
+      z-index: 10;
+    }
+
+    .brand {
+      font-size: 1.25rem;
+      font-weight: 700;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-group-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .nav-link:hover {
+      color: var(--text-primary);
+      background-color: rgba(59, 130, 246, 0.1);
+      transform: translateX(4px);
+    }
+
+    .nav-link.active {
+      color: #ffffff;
+      background: var(--accent-gradient);
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    /* Main Content */
+    .main-wrapper {
+      margin-left: var(--sidebar-width);
+      flex: 1;
+      padding: 3rem 4rem;
+      max-width: 1100px;
+    }
+
+    .content {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 3rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Typography & Elements */
+    h1, h2, h3, h4, h5, h6 {
+      color: var(--text-primary);
+      font-weight: 700;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      line-height: 1.3;
+    }
+
+    h1 {
+      font-size: 2.25rem;
+      margin-top: 0;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--border-color);
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    h2 {
+      font-size: 1.6rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    h3 { font-size: 1.25rem; }
+
+    p {
+      margin-bottom: 1.25rem;
+      color: #d1d5db;
+    }
+
+    a {
+      color: var(--accent-hover);
+      text-decoration: none;
+      transition: border-bottom 0.2s ease;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    ul, ol {
+      margin-bottom: 1.25rem;
+      padding-left: 1.5rem;
+      color: #d1d5db;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+
+    blockquote {
+      border-left: 4px solid var(--accent);
+      background: rgba(59, 130, 246, 0.05);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.25rem;
+      border-radius: 0 0.5rem 0.5rem 0;
+      color: #9ca3af;
+      font-style: italic;
+    }
+
+    code {
+      font-family: 'Fira Code', monospace;
+      background: var(--code-bg);
+      color: #f35b04;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.875em;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    pre {
+      background: var(--code-bg);
+      padding: 1.25rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border-color);
+    }
+
+    pre code {
+      background: transparent;
+      padding: 0;
+      border: none;
+      color: #e5e7eb;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.75rem;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border: 1px solid var(--border-color);
+    }
+
+    th {
+      background-color: var(--bg-card);
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    tr:nth-child(even) {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+
+    tr:hover {
+      background-color: rgba(59, 130, 246, 0.05);
+    }
+
+    hr {
+      border: 0;
+      height: 1px;
+      background: var(--border-color);
+      margin: 2rem 0;
+    }
+
+    /* Mermaid Container */
+    .mermaid {
+      background: #ffffff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    @media (max-width: 768px) {
+      body { flex-direction: column; }
+      .sidebar { width: 100%; position: relative; height: auto; }
+      .main-wrapper { margin-left: 0; padding: 1.5rem; }
+      .content { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="brand">⚡ AI Server Wiki</div>
+    <div class="nav-group-title">Documents</div>
+    <div class="nav-links">
+      <a href="ai-server-overview.html" class="nav-link ">AI SERVER OVERVIEW</a>
+<a href="amd-cpu-roadmap.html" class="nav-link ">AMD CPU ROADMAP</a>
+<a href="amd-roadmap.html" class="nav-link ">AMD ROADMAP</a>
+<a href="ampere-roadmap.html" class="nav-link ">AMPERE ROADMAP</a>
+<a href="api-examples.html" class="nav-link ">API EXAMPLES</a>
+<a href="aws-roadmap.html" class="nav-link ">AWS ROADMAP</a>
+<a href="cxl-overview.html" class="nav-link ">CXL OVERVIEW</a>
+<a href="dram-overview.html" class="nav-link ">DRAM OVERVIEW</a>
+<a href="gddr-overview.html" class="nav-link ">GDDR OVERVIEW</a>
+<a href="general-server-overview.html" class="nav-link ">GENERAL SERVER OVERVIEW</a>
+<a href="google-roadmap.html" class="nav-link ">GOOGLE ROADMAP</a>
+<a href="hbm-overview.html" class="nav-link ">HBM OVERVIEW</a>
+<a href="index.html" class="nav-link ">INDEX</a>
+<a href="intel-roadmap.html" class="nav-link active">INTEL ROADMAP</a>
+<a href="lpcamm-overview.html" class="nav-link ">LPCAMM OVERVIEW</a>
+<a href="markdown-examples.html" class="nav-link ">MARKDOWN EXAMPLES</a>
+<a href="mcrdimm-overview.html" class="nav-link ">MCRDIMM OVERVIEW</a>
+<a href="memory-overview.html" class="nav-link ">MEMORY OVERVIEW</a>
+<a href="nand-overview.html" class="nav-link ">NAND OVERVIEW</a>
+<a href="nvidia-blackwell.html" class="nav-link ">NVIDIA BLACKWELL</a>
+<a href="nvidia-hopper.html" class="nav-link ">NVIDIA HOPPER</a>
+<a href="nvidia-roadmap.html" class="nav-link ">NVIDIA ROADMAP</a>
+<a href="nvidia-rubin.html" class="nav-link ">NVIDIA RUBIN</a>
+<a href="rdimm-overview.html" class="nav-link ">RDIMM OVERVIEW</a>
+<a href="socamm-overview.html" class="nav-link ">SOCAMM OVERVIEW</a>
+<a href="step2-market.html" class="nav-link ">STEP2 MARKET</a>
+<a href="step3-roadmap.html" class="nav-link ">STEP3 ROADMAP</a>
+<a href="step4-teardown.html" class="nav-link ">STEP4 TEARDOWN</a>
+    </div>
+  </nav>
+
+  <main class="main-wrapper">
+    <article class="content">
+      <hr>
+<p>title: Intel CPU & Gaudi Roadmap</p>
+<p>description: 인텔(Intel) 서버 CPU (Sapphire/Emerald/Granite/Sierra/Clearwater Forest/Diamond Rapids/Coral Rapids) 및 Gaudi AI 가속기 로드맵 및 시장 예상 스펙 분석</p>
+<hr>
+
+<p><style></p>
+<p>.roadmap-card-grid {</p>
+<p>  display: grid;</p>
+<p>  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));</p>
+<p>  gap: 20px;</p>
+<p>  margin: 30px 0;</p>
+<p>}</p>
+<p>.roadmap-card {</p>
+<p>  background-color: #1e293b;</p>
+<p>  border-left: 4px solid #00c8ff;</p>
+<p>  border-radius: 0 10px 10px 0;</p>
+<p>  padding: 20px;</p>
+<p>  box-shadow: 0 4px 12px rgba(0,0,0,0.2);</p>
+<p>}</p>
+<p>.roadmap-card-cwf { border-left-color: #10b981; }</p>
+<p>.roadmap-card-dmr { border-left-color: #3b82f6; }</p>
+<p>.roadmap-card-crl { border-left-color: #a855f7; }</p>
+
+<p>.badge {</p>
+<p>  font-size: 0.75rem;</p>
+<p>  padding: 2px 8px;</p>
+<p>  border-radius: 4px;</p>
+<p>  font-weight: bold;</p>
+<p>}</p>
+<p>.badge-cwf { background-color: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #10b981; }</p>
+<p>.badge-dmr { background-color: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid #3b82f6; }</p>
+<p>.badge-crl { background-color: rgba(168, 85, 247, 0.2); color: #c084fc; border: 1px solid #a855f7; }</p>
+
+<p>.insight-box {</p>
+<p>  background-color: rgba(0, 200, 255, 0.1);</p>
+<p>  border-left: 4px solid #00c8ff;</p>
+<p>  padding: 18px;</p>
+<p>  border-radius: 0 8px 8px 0;</p>
+<p>  margin: 24px 0;</p>
+<p>}</p>
+<p>.insight-box-title {</p>
+<p>  font-weight: bold;</p>
+<p>  color: #00c8ff;</p>
+<p>  margin-bottom: 8px;</p>
+<p>}</p>
+<p></style></p>
+
+<h1>🔵 Intel 서버 CPU 및 Gaudi 가속기 로드맵</h1>
+
+<p>인텔은 일반 범용 서버 CPU 시장의 절대강자인 <strong>Xeon(제온)</strong> 제품군과, 엔비디아의 독점 구도에 가격 대 성능 비로 정면 추격하는 AI 가속기 <strong>Gaudi(가우디)</strong> 시리즈를 통해 서버 시장 전체를 전방위로 커버하는 기술력을 보유하고 있습니다.</p>
+
+<hr>
+
+<h2>1. 대표 플랫폼 이미지</h2>
+<p>파격적인 가성비와 개방형 아키텍처로 설계된 차세대 <strong>Intel Gaudi 3 AI 가속기 범용 베이스보드(UBB) 유닛</strong>입니다.</p>
+
+<p><img src="./.vitepress/public/intel-gaudi-server.jpg" alt="Intel Gaudi 3 AI Accelerator Board" style="max-width: 480px; border-radius: 12px; margin: 20px 0; box-shadow: 0 8px 24px rgba(0,0,0,0.2);" /></p>
+
+<hr>
+
+<h2>2. Intel CPU & 가속기 로드맵 요약</h2>
+
+<h3>① AI 연산 가속기 (Intel Gaudi)</h3>
+
+<table><thead><tr>
+<th>출시 연도</th>
+<th>가속기 모델명</th>
+<th>연산 성능 (FP8)</th>
+<th>HBM 메모리 사양</th>
+<th>주요 특징 및 네트워킹 구성</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>2022</strong></td>
+<td><strong>Gaudi 2</strong></td>
+<td>0.8 PFLOPS</td>
+<td>96GB HBM2e</td>
+<td>7nm 공정 기반. 가격적 이점이 매우 높아 대규모 추론 서비스 도입 활발.</td>
+</tr>
+<tr>
+<td><strong>2024</strong></td>
+<td><strong>Gaudi 3</strong></td>
+<td><strong>1.8 PFLOPS</strong></td>
+<td><strong>128GB HBM3</strong></td>
+<td>5nm 공정 기반. 단일 칩에 24개의 200Gb 이더넷 포트를 내장해 스위치 비용 파격 절감.</td>
+</tr>
+<tr>
+<td><strong>2025~2026</strong></td>
+<td><strong>Falcon Shores</strong></td>
+<td><strong>MI350 대항</strong></td>
+<td><strong>HBM3e/HBM4</strong></td>
+<td>Gaudi 기술과 인텔 Xe GPU 아키텍처를 통합한 완전 개량형 차세대 통합 가속기.</td>
+</tr>
+</tbody></table>
+
+<hr>
+
+<h3>② 범용 서버 CPU (Intel Xeon) 로드맵 (Clearwater Forest / Diamond Rapids / Coral Rapids 포함)</h3>
+
+<table><thead><tr>
+<th>출시 연도</th>
+<th>세대 및 코드네임</th>
+<th>최대 코어 수</th>
+<th>미세 공정 (Node)</th>
+<th>메모리 & 버스 지원</th>
+<th>주요 아키텍처적 개량 특징</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>2023</strong></td>
+<td><strong>4세대 Sapphire Rapids</strong></td>
+<td>60 코어 (P)</td>
+<td>Intel 7 (10nm)</td>
+<td>DDR5-4800, PCIe 5.0</td>
+<td>PCIe Gen 5 공식 탑재, CPU 내 AMX AI 가속 블록 첫 탑재.</td>
+</tr>
+<tr>
+<td><strong>2023 H2</strong></td>
+<td><strong>5세대 Emerald Rapids</strong></td>
+<td>64 코어 (P)</td>
+<td>Intel 7 (10nm)</td>
+<td>DDR5-5600, PCIe 5.0</td>
+<td>L3 캐시 용량을 전 세대 대비 3배(320MB)로 늘려 DB 성능 최적화.</td>
+</tr>
+<tr>
+<td><strong>2024 ~ 2025</strong></td>
+<td><strong>6세대 Granite Rapids</strong></td>
+<td><strong>128 코어</strong> (P)</td>
+<td>Intel 3 (3nm)</td>
+<td>MCR DDR5 (8.8 GT/s), PCIe 5.0</td>
+<td>P-Core 전용. MCRDIMM 도입으로 메모리 대역폭 2배 극대화.</td>
+</tr>
+<tr>
+<td><strong>2024 ~ 2025</strong></td>
+<td><strong>6세대 Sierra Forest</strong></td>
+<td><strong>288 코어</strong> (E)</td>
+<td>Intel 3 (3nm)</td>
+<td>DDR5-6400, PCIe 5.0, CXL 2.0</td>
+<td>고집적 E-Core 전용. 전력 감소 및 클라우드 컨테이너 밀도 극대화.</td>
+</tr>
+<tr>
+<td><strong>2025 H2 ~ 2026(E)</strong></td>
+<td><strong>7세대 Clearwater Forest</strong></td>
+<td><strong>288 ~ 576 코어</strong> (E)</td>
+<td><strong>Intel 18A (1.8nm)</strong></td>
+<td><strong>MRDIMM / SOCAMM, PCIe 6.0</strong></td>
+<td><strong>18A 공정 최초 적용</strong>. RibbonFET GAA & PowerVia 후면 전력 공급.</td>
+</tr>
+<tr>
+<td><strong>2026 ~ 2027(E)</strong></td>
+<td><strong>7세대 Diamond Rapids</strong></td>
+<td><strong>192 ~ 256 코어</strong> (P)</td>
+<td><strong>Intel 18A / 14A</strong></td>
+<td><strong>MRDIMM (12.8 GT/s), PCIe 6.0</strong></td>
+<td>P-Core 플래그십. <strong>AMX Gen2 / APX</strong>, CXL 3.0/3.1 메모리 풀링.</td>
+</tr>
+<tr>
+<td><strong>2027 ~ 2028(E)</strong></td>
+<td><strong>8세대 Coral Rapids</strong></td>
+<td><strong>256+ (P) / 512+ (E)</strong></td>
+<td><strong>Intel 14A (1.4nm)</strong></td>
+<td><strong>DDR6 / MRDIMM, PCIe 7.0</strong></td>
+<td><strong>차세대 High-NA EUV 공정</strong>. 광학 I/O(CPO) 및 CXL 4.0 통합.</td>
+</tr>
+</tbody></table>
+
+<hr>
+
+<h2>🚀 Section 3. 차세대 인텔 제온 CPU 3대 플래그십 상세 분석 (시장 예상 스펙)</h2>
+
+<div class="roadmap-card-grid">
+
+<p>  <!-- 1. Clearwater Forest --></p>
+  <div class="roadmap-card roadmap-card-cwf">
+    <div style="font-size: 1.1rem; font-weight: bold; color: #34d399; margin-bottom: 8px;">
+<p>      <span class="badge badge-cwf">Intel 18A 최초 적용</span></p>
+<p>      <span>🌲 Clearwater Forest (7세대 E-Core Xeon)</span></p>
+<p>    </div></p>
+    <ul style="font-size: 0.88rem; color: #cbd5e1; line-height: 1.6; padding-left: 18px; margin: 0;">
+      <li><strong>출시 예상:</strong> 2025년 하반기 ~ 2026년</li>
+      <li><strong>제조 공정:</strong> <strong>Intel 18A (1.8nm급)</strong> 파운드리 공정 (RibbonFET GAA + PowerVia 후면 전치 전력 공급 기술)</li>
+      <li><strong>코어 구성:</strong> Darkmont E-Core 아키텍처 기반 <strong>288 ~ 576 코어</strong> (클라우드 네이티브 초고밀도)</li>
+      <li><strong>메모리 & I/O:</strong> <strong>MRDIMM / SOCAMM</strong> (8.8~10.7 GT/s), <strong>PCIe Gen 6.0</strong>, CXL 3.0</li>
+      <li><strong>시장 타겟:</strong> AWS, Azure, Google Cloud hyperscale 마이크로서비스 및 저전력 고밀도 컨테이너 노드</li>
+<p>    </ul></p>
+<p>  </div></p>
+
+<p>  <!-- 2. Diamond Rapids --></p>
+  <div class="roadmap-card roadmap-card-dmr">
+    <div style="font-size: 1.1rem; font-weight: bold; color: #60a5fa; margin-bottom: 8px;">
+<p>      <span class="badge badge-dmr">고성능 P-Core 대장주</span></p>
+<p>      <span>💎 Diamond Rapids (7세대 P-Core Xeon)</span></p>
+<p>    </div></p>
+    <ul style="font-size: 0.88rem; color: #cbd5e1; line-height: 1.6; padding-left: 18px; margin: 0;">
+      <li><strong>출시 예상:</strong> 2026년 ~ 2027년</li>
+      <li><strong>제조 공정:</strong> <strong>Intel 18A / Intel 14A</strong> 선단 공정 + Foveros Direct 3D 패키징</li>
+      <li><strong>코어 구성:</strong> Panther Cove P-Core 아키텍처 기반 <strong>192 ~ 256 코어</strong> (싱글 스레드 & 엔터프라이즈 극대화)</li>
+      <li><strong>메모리 & I/O:</strong> <strong>MRDIMM (12.8 GT/s)</strong>, <strong>PCIe Gen 6.0 (128+ 레인)</strong>, CXL 3.0 / 3.1 메모리 풀링</li>
+      <li><strong>시장 타겟:</strong> AMD Venice(Zen 6 EPYC) 대항마, 엔터프라이즈 AI LLM 미세조정, 차세대 인메모리 DB</li>
+<p>    </ul></p>
+<p>  </div></p>
+
+<p>  <!-- 3. Coral Rapids --></p>
+  <div class="roadmap-card roadmap-card-crl">
+    <div style="font-size: 1.1rem; font-weight: bold; color: #c084fc; margin-bottom: 8px;">
+<p>      <span class="badge badge-crl">High-NA EUV 차세대</span></p>
+<p>      <span>🪸 Coral Rapids (8세대 통합 Xeon)</span></p>
+<p>    </div></p>
+    <ul style="font-size: 0.88rem; color: #cbd5e1; line-height: 1.6; padding-left: 18px; margin: 0;">
+      <li><strong>출시 예상:</strong> 2027년 ~ 2028년</li>
+      <li><strong>제조 공정:</strong> 차세대 High-NA EUV 노광 기반 <strong>Intel 14A (1.4nm급)</strong> 공정</li>
+      <li><strong>코어 구성:</strong> 256+ P-Core / 512+ E-Core (모듈형 통합 연산 타일 아키텍처)</li>
+      <li><strong>메모리 & I/O:</strong> <strong>DDR6 / MRDIMM (12.8 ~ 17.6 GT/s)</strong>, <strong>PCIe Gen 7.0</strong>, <strong>Optical I/O (광학 연결)</strong>, CXL 4.0</li>
+      <li><strong>시장 타겟:</strong> 광학 인터커넥트(CPO) 기반 소켓 간 무지연 통신, 차세대 초대형 AI 데이터센터</li>
+<p>    </ul></p>
+<p>  </div></p>
+
+<p></div></p>
+
+<div class="insight-box">
+  <div class="insight-box-title">💡 인텔 제온 차세대 로드맵 핵심 기술 포인트</div>
+  <div class="insight-box-text">
+<p>    • <strong>Intel 18A 공정 분기점:</strong> Clearwater Forest와 Diamond Rapids부터 인텔의 사운를 건 <strong>RibbonFET GAA 트랜지스터</strong>와 <strong>PowerVia 후면 전력 전달 기술</strong>이 본격 도입됩니다.<br/></p>
+<p>    • <strong>메모리 인터페이스 도약:</strong> DDR5 구형 속도 한계를 넘기 위해 차세대 <strong>MRDIMM (12.8 GT/s)</strong> 과 서버용 <strong>SOCAMM</strong>을 표준 탑재합니다.<br/></p>
+<p>    • <strong>PCIe 6.0 & CXL 3.0/4.0:</strong> PAM4 인코딩 PCIe Gen 6.0 버스 및 초고속 광학 I/O (Co-Packaged Optics) 인터페이스가 Coral Rapids 세대에서 차례로 개화할 예정입니다.</p>
+<p>  </div></p>
+<p></div></p>
+
+<hr>
+
+<p>👈 <strong><a href="/general-server-overview">General Server Overview로 돌아가기</a></strong></p>
+
+    </article>
+  </main>
+
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'default' });
+  </script>
+</body>
+</html>

@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🚀 MCRDIMM / MRDIMM Overview (차세대 2배속 서버 메모리) | AI Server Wiki</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --bg-primary: #0b0f19;
+      --bg-secondary: #111827;
+      --bg-card: #1f2937;
+      --text-primary: #f9fafb;
+      --text-secondary: #9ca3af;
+      --text-muted: #6b7280;
+      --accent: #3b82f6;
+      --accent-hover: #60a5fa;
+      --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+      --border-color: #374151;
+      --code-bg: #111827;
+      --sidebar-width: 280px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.7;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Navigation */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: rgba(17, 24, 39, 0.8);
+      backdrop-filter: blur(12px);
+      border-right: 1px solid var(--border-color);
+      padding: 2rem 1.25rem;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      overflow-y: auto;
+      z-index: 10;
+    }
+
+    .brand {
+      font-size: 1.25rem;
+      font-weight: 700;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-group-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .nav-link:hover {
+      color: var(--text-primary);
+      background-color: rgba(59, 130, 246, 0.1);
+      transform: translateX(4px);
+    }
+
+    .nav-link.active {
+      color: #ffffff;
+      background: var(--accent-gradient);
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    /* Main Content */
+    .main-wrapper {
+      margin-left: var(--sidebar-width);
+      flex: 1;
+      padding: 3rem 4rem;
+      max-width: 1100px;
+    }
+
+    .content {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 3rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Typography & Elements */
+    h1, h2, h3, h4, h5, h6 {
+      color: var(--text-primary);
+      font-weight: 700;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      line-height: 1.3;
+    }
+
+    h1 {
+      font-size: 2.25rem;
+      margin-top: 0;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--border-color);
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    h2 {
+      font-size: 1.6rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    h3 { font-size: 1.25rem; }
+
+    p {
+      margin-bottom: 1.25rem;
+      color: #d1d5db;
+    }
+
+    a {
+      color: var(--accent-hover);
+      text-decoration: none;
+      transition: border-bottom 0.2s ease;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    ul, ol {
+      margin-bottom: 1.25rem;
+      padding-left: 1.5rem;
+      color: #d1d5db;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+
+    blockquote {
+      border-left: 4px solid var(--accent);
+      background: rgba(59, 130, 246, 0.05);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.25rem;
+      border-radius: 0 0.5rem 0.5rem 0;
+      color: #9ca3af;
+      font-style: italic;
+    }
+
+    code {
+      font-family: 'Fira Code', monospace;
+      background: var(--code-bg);
+      color: #f35b04;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.875em;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    pre {
+      background: var(--code-bg);
+      padding: 1.25rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border-color);
+    }
+
+    pre code {
+      background: transparent;
+      padding: 0;
+      border: none;
+      color: #e5e7eb;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.75rem;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border: 1px solid var(--border-color);
+    }
+
+    th {
+      background-color: var(--bg-card);
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    tr:nth-child(even) {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+
+    tr:hover {
+      background-color: rgba(59, 130, 246, 0.05);
+    }
+
+    hr {
+      border: 0;
+      height: 1px;
+      background: var(--border-color);
+      margin: 2rem 0;
+    }
+
+    /* Mermaid Container */
+    .mermaid {
+      background: #ffffff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    @media (max-width: 768px) {
+      body { flex-direction: column; }
+      .sidebar { width: 100%; position: relative; height: auto; }
+      .main-wrapper { margin-left: 0; padding: 1.5rem; }
+      .content { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="brand">⚡ AI Server Wiki</div>
+    <div class="nav-group-title">Documents</div>
+    <div class="nav-links">
+      <a href="ai-server-overview.html" class="nav-link ">AI SERVER OVERVIEW</a>
+<a href="amd-cpu-roadmap.html" class="nav-link ">AMD CPU ROADMAP</a>
+<a href="amd-roadmap.html" class="nav-link ">AMD ROADMAP</a>
+<a href="ampere-roadmap.html" class="nav-link ">AMPERE ROADMAP</a>
+<a href="api-examples.html" class="nav-link ">API EXAMPLES</a>
+<a href="aws-roadmap.html" class="nav-link ">AWS ROADMAP</a>
+<a href="cxl-overview.html" class="nav-link ">CXL OVERVIEW</a>
+<a href="dram-overview.html" class="nav-link ">DRAM OVERVIEW</a>
+<a href="gddr-overview.html" class="nav-link ">GDDR OVERVIEW</a>
+<a href="general-server-overview.html" class="nav-link ">GENERAL SERVER OVERVIEW</a>
+<a href="google-roadmap.html" class="nav-link ">GOOGLE ROADMAP</a>
+<a href="hbm-overview.html" class="nav-link ">HBM OVERVIEW</a>
+<a href="index.html" class="nav-link ">INDEX</a>
+<a href="intel-roadmap.html" class="nav-link ">INTEL ROADMAP</a>
+<a href="lpcamm-overview.html" class="nav-link ">LPCAMM OVERVIEW</a>
+<a href="markdown-examples.html" class="nav-link ">MARKDOWN EXAMPLES</a>
+<a href="mcrdimm-overview.html" class="nav-link active">MCRDIMM OVERVIEW</a>
+<a href="memory-overview.html" class="nav-link ">MEMORY OVERVIEW</a>
+<a href="nand-overview.html" class="nav-link ">NAND OVERVIEW</a>
+<a href="nvidia-blackwell.html" class="nav-link ">NVIDIA BLACKWELL</a>
+<a href="nvidia-hopper.html" class="nav-link ">NVIDIA HOPPER</a>
+<a href="nvidia-roadmap.html" class="nav-link ">NVIDIA ROADMAP</a>
+<a href="nvidia-rubin.html" class="nav-link ">NVIDIA RUBIN</a>
+<a href="rdimm-overview.html" class="nav-link ">RDIMM OVERVIEW</a>
+<a href="socamm-overview.html" class="nav-link ">SOCAMM OVERVIEW</a>
+<a href="step2-market.html" class="nav-link ">STEP2 MARKET</a>
+<a href="step3-roadmap.html" class="nav-link ">STEP3 ROADMAP</a>
+<a href="step4-teardown.html" class="nav-link ">STEP4 TEARDOWN</a>
+    </div>
+  </nav>
+
+  <main class="main-wrapper">
+    <article class="content">
+      <hr>
+<p>title: MCRDIMM Overview</p>
+<p>description: 차세대 초고속 MCRDIMM / MRDIMM 서버 메모리 모듈의 기판 구조, MUX 데이터 버퍼(DB) 칩셋 및 12.8 GT/s 동작 원리 분석</p>
+<hr>
+
+<p><style></p>
+<p>.rdimm-board-container {</p>
+<p>  background-color: #0b1329;</p>
+<p>  border: 2px solid #1e293b;</p>
+<p>  border-radius: 14px;</p>
+<p>  padding: 24px;</p>
+<p>  margin: 30px 0;</p>
+<p>  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);</p>
+<p>}</p>
+<p>.board-title {</p>
+<p>  text-align: center;</p>
+<p>  font-size: 1.25rem;</p>
+<p>  font-weight: bold;</p>
+<p>  color: #38bdf8;</p>
+<p>  margin-bottom: 6px;</p>
+<p>}</p>
+<p>.board-subtitle {</p>
+<p>  text-align: center;</p>
+<p>  font-size: 0.88rem;</p>
+<p>  color: #94a3b8;</p>
+<p>  margin-bottom: 22px;</p>
+<p>}</p>
+<p>.comp-card-grid {</p>
+<p>  display: grid;</p>
+<p>  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));</p>
+<p>  gap: 20px;</p>
+<p>  margin: 30px 0;</p>
+<p>}</p>
+<p>.comp-card {</p>
+<p>  background-color: #1e293b;</p>
+<p>  border-left: 4px solid #38bdf8;</p>
+<p>  border-radius: 0 10px 10px 0;</p>
+<p>  padding: 20px;</p>
+<p>  box-shadow: 0 4px 12px rgba(0,0,0,0.2);</p>
+<p>}</p>
+<p>.comp-card-rcd { border-left-color: #ef4444; }</p>
+<p>.comp-card-db { border-left-color: #ec4899; }</p>
+<p>.comp-card-pmic { border-left-color: #f59e0b; }</p>
+<p>.comp-card-spd { border-left-color: #10b981; }</p>
+<p>.comp-card-dram { border-left-color: #3b82f6; }</p>
+
+<p>.comp-header {</p>
+<p>  font-size: 1.05rem;</p>
+<p>  font-weight: bold;</p>
+<p>  margin-bottom: 8px;</p>
+<p>  display: flex;</p>
+<p>  align-items: center;</p>
+<p>  gap: 8px;</p>
+<p>}</p>
+<p>.badge {</p>
+<p>  font-size: 0.75rem;</p>
+<p>  padding: 2px 8px;</p>
+<p>  border-radius: 4px;</p>
+<p>  font-weight: bold;</p>
+<p>}</p>
+<p>.badge-rcd { background-color: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid #ef4444; }</p>
+<p>.badge-db { background-color: rgba(236, 72, 153, 0.2); color: #f472b6; border: 1px solid #ec4899; }</p>
+<p>.badge-pmic { background-color: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid #f59e0b; }</p>
+<p>.badge-spd { background-color: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #10b981; }</p>
+<p>.badge-dram { background-color: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid #3b82f6; }</p>
+
+<p>.insight-box {</p>
+<p>  background-color: rgba(236, 72, 153, 0.1);</p>
+<p>  border-left: 4px solid #ec4899;</p>
+<p>  padding: 18px;</p>
+<p>  border-radius: 0 8px 8px 0;</p>
+<p>  margin: 24px 0;</p>
+<p>}</p>
+<p>.insight-box-title {</p>
+<p>  font-weight: bold;</p>
+<p>  color: #ec4899;</p>
+<p>  margin-bottom: 8px;</p>
+<p>  display: flex;</p>
+<p>  align-items: center;</p>
+<p>  gap: 6px;</p>
+<p>}</p>
+<p>.insight-box-text {</p>
+<p>  font-size: 0.92rem;</p>
+<p>  color: #cbd5e1;</p>
+<p>  margin: 0;</p>
+<p>  line-height: 1.6;</p>
+<p>}</p>
+<p>.legend-chip-bar {</p>
+<p>  display: flex;</p>
+<p>  justify-content: center;</p>
+<p>  flex-wrap: wrap;</p>
+<p>  gap: 16px;</p>
+<p>  margin-top: 16px;</p>
+<p>  padding-top: 12px;</p>
+<p>  border-top: 1px solid #334155;</p>
+<p>  font-size: 0.82rem;</p>
+<p>  color: #cbd5e1;</p>
+<p>}</p>
+<p></style></p>
+
+<h1>🚀 MCRDIMM / MRDIMM Overview (차세대 2배속 서버 메모리)</h1>
+
+<p><strong>MCRDIMM (Multiplexer Combined Ranks DIMM)</strong> 및 <strong>MRDIMM (Multi-Ranked DIMM)</strong> 은 AI 및 HPC(고성능 컴퓨팅) 서버의 대역폭 병목을 극복하기 위해 설계된 차세대 초고속 모듈입니다. 모듈 온보드에 <strong>MCR MUX 데이터 버퍼(DB)</strong> 칩을 탑재하여 2개의 랭크(Rank)를 동시 병렬 액세스함으로써, 대역폭을 기존 RDIMM 대비 <strong>2배(8.8 GT/s ~ 12.8 GT/s, 최대 128 GB/s)</strong> 로 끌어올립니다.</p>
+
+<hr>
+
+<h2>🛠️ Section 1. MCRDIMM PCB 물리 토폴로지 다이어그램</h2>
+
+<p>아래 다이어그램은 <strong>MCRDIMM / MRDIMM</strong> 기판 상의 MUX 데이터 버퍼(DB0~DB9) 칩셋 및 듀얼 랭크 DRAM 배치를 표현한 물리 구조도입니다.</p>
+
+<div class="rdimm-board-container">
+<div class="board-title">🟩 MCRDIMM / MRDIMM PCB 물리 토폴로지 (Board Topology)</div>
+<div class="board-subtitle">※ 2개 랭크(Rank 0/1) 동시 액세스를 위한 10개 MUX 데이터 버퍼(DB) + MCR RCD 배치</div>
+
+<p><svg viewBox="0 0 1000 440" width="100%" height="auto" style="border-radius: 10px; overflow: hidden; background: #2d0617; border: 2px solid #be185d;"></p>
+<p><rect x="20" y="20" width="960" height="320" rx="12" fill="#4c0519" stroke="#f43f5e" stroke-width="2.5"/></p>
+
+<p><!-- Sub-Channel A Boundary --></p>
+<p><rect x="40" y="35" width="420" height="290" rx="8" fill="rgba(244, 63, 94, 0.08)" stroke="rgba(244, 63, 94, 0.3)" stroke-dasharray="4 4"/></p>
+<p><text x="55" y="55" fill="#f472b6" font-size="12" font-weight="bold">🔹 Sub-Channel A (Rank 0 + Rank 1 MUX)</text></p>
+
+<p><!-- Sub-Channel B Boundary --></p>
+<p><rect x="540" y="35" width="420" height="290" rx="8" fill="rgba(244, 63, 94, 0.08)" stroke="rgba(244, 63, 94, 0.3)" stroke-dasharray="4 4"/></p>
+<p><text x="555" y="55" fill="#f472b6" font-size="12" font-weight="bold">🔹 Sub-Channel B (Rank 0 + Rank 1 MUX)</text></p>
+
+<p><!-- Gold Finger Edge Connector --></p>
+<p><g fill="#d97706" stroke="#b45309" stroke-width="1"></p>
+<p><rect x="50" y="350" width="420" height="40" rx="3" fill="#f59e0b"/></p>
+<p><rect x="530" y="350" width="420" height="40" rx="3" fill="#f59e0b"/></p>
+<p><rect x="475" y="350" width="50" height="25" fill="#0b1329" stroke="none"/></p>
+<p></g></p>
+<p><text x="500" y="415" fill="#fbbf24" font-size="13" font-weight="bold" text-anchor="middle">288-Pin MCR High-Speed Gold Finger (8.8 ~ 12.8 GT/s)</text></p>
+
+<p><!-- 1. MCR RCD Chip --></p>
+<p><g></p>
+<p><rect x="430" y="185" width="140" height="80" rx="8" fill="#991b1b" stroke="#ef4444" stroke-width="3"/></p>
+<p><text x="500" y="232" fill="#ffffff" font-size="18" font-weight="bold" text-anchor="middle">MCR RCD</text></p>
+<p></g></p>
+
+<p><!-- 2. PMIC --></p>
+<p><g></p>
+<p><rect x="440" y="45" width="120" height="65" rx="6" fill="#78350f" stroke="#f59e0b" stroke-width="2.5"/></p>
+<p><text x="500" y="84" fill="#ffffff" font-size="17" font-weight="bold" text-anchor="middle">PMIC</text></p>
+<p></g></p>
+
+<p><!-- 3. SPD Hub --></p>
+<p><g></p>
+<p><rect x="300" y="55" width="95" height="50" rx="5" fill="#064e3b" stroke="#10b981" stroke-width="2"/></p>
+<p><text x="347" y="86" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">SPD Hub</text></p>
+<p></g></p>
+
+<p><!-- 4. Thermal Sensors TS0 / TS1 --></p>
+<p><g></p>
+<p><rect x="50" y="60" width="50" height="40" rx="4" fill="#581c87" stroke="#c084fc" stroke-width="2"/></p>
+<p><text x="75" y="85" fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle">TS0</text></p>
+<p></g></p>
+<p><g></p>
+<p><rect x="900" y="60" width="50" height="40" rx="4" fill="#581c87" stroke="#c084fc" stroke-width="2"/></p>
+<p><text x="925" y="85" fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle">TS1</text></p>
+<p></g></p>
+
+<p><!-- 5. MUX Data Buffers (DB Array - Pink chips near Gold Finger) --></p>
+<p><g fill="#831843" stroke="#f472b6" stroke-width="2"></p>
+<p><rect x="65" y="280" width="50" height="30" rx="3"/></p>
+<p><rect x="135" y="280" width="50" height="30" rx="3"/></p>
+<p><rect x="205" y="280" width="50" height="30" rx="3"/></p>
+<p><rect x="275" y="280" width="50" height="30" rx="3"/></p>
+<p><rect x="345" y="280" width="50" height="30" rx="3"/></p>
+
+<p><rect x="605" y="280" width="50" height="30" rx="3"/></p>
+<p><rect x="675" y="280" width="50" height="30" rx="3"/></p>
+<p><rect x="745" y="280" width="50" height="30" rx="3"/></p>
+<p><rect x="815" y="280" width="50" height="30" rx="3"/></p>
+<p><rect x="885" y="280" width="50" height="30" rx="3"/></p>
+<p></g></p>
+
+<p><text x="90" y="300" fill="#fbcfe8" font-size="10" font-weight="bold" text-anchor="middle">DB0</text></p>
+<p><text x="160" y="300" fill="#fbcfe8" font-size="10" font-weight="bold" text-anchor="middle">DB1</text></p>
+<p><text x="230" y="300" fill="#fbcfe8" font-size="10" font-weight="bold" text-anchor="middle">DB2</text></p>
+<p><text x="300" y="300" fill="#fbcfe8" font-size="10" font-weight="bold" text-anchor="middle">DB3</text></p>
+<p><text x="370" y="300" fill="#fbcfe8" font-size="10" font-weight="bold" text-anchor="middle">DB4</text></p>
+<p><text x="630" y="300" fill="#fbcfe8" font-size="10" font-weight="bold" text-anchor="middle">DB5</text></p>
+<p><text x="700" y="300" fill="#fbcfe8" font-size="10" font-weight="bold" text-anchor="middle">DB6</text></p>
+<p><text x="770" y="300" fill="#fbcfe8" font-size="10" font-weight="bold" text-anchor="middle">DB7</text></p>
+<p><text x="840" y="300" fill="#fbcfe8" font-size="10" font-weight="bold" text-anchor="middle">DB8</text></p>
+<p><text x="910" y="300" fill="#fbcfe8" font-size="10" font-weight="bold" text-anchor="middle">DB9</text></p>
+
+<p><!-- 6. Dual-Rank DRAM IC Array (Rank 0 + Rank 1 Staked) --></p>
+<p><g fill="#1e3a8a" stroke="#60a5fa" stroke-width="1.5"></p>
+<p><rect x="60" y="130" width="60" height="130" rx="4"/></p>
+<p><rect x="130" y="130" width="60" height="130" rx="4"/></p>
+<p><rect x="200" y="130" width="60" height="130" rx="4"/></p>
+<p><rect x="270" y="130" width="60" height="130" rx="4"/></p>
+<p><rect x="340" y="130" width="60" height="130" rx="4" fill="#1e1b4b" stroke="#818cf8"/></p>
+
+<p><rect x="600" y="130" width="60" height="130" rx="4" fill="#1e1b4b" stroke="#818cf8"/></p>
+<p><rect x="670" y="130" width="60" height="130" rx="4"/></p>
+<p><rect x="740" y="130" width="60" height="130" rx="4"/></p>
+<p><rect x="810" y="130" width="60" height="130" rx="4"/></p>
+<p><rect x="880" y="130" width="60" height="130" rx="4"/></p>
+<p></g></p>
+
+<p><text x="90" y="195" fill="#93c5fd" font-size="11" font-weight="bold" text-anchor="middle">DRAM</text></p>
+<p><text x="160" y="195" fill="#93c5fd" font-size="11" font-weight="bold" text-anchor="middle">DRAM</text></p>
+<p><text x="230" y="195" fill="#93c5fd" font-size="11" font-weight="bold" text-anchor="middle">DRAM</text></p>
+<p><text x="300" y="195" fill="#93c5fd" font-size="11" font-weight="bold" text-anchor="middle">DRAM</text></p>
+<p><text x="370" y="195" fill="#c7d2fe" font-size="11" font-weight="bold" text-anchor="middle">ECC IC</text></p>
+
+<p><text x="630" y="195" fill="#c7d2fe" font-size="11" font-weight="bold" text-anchor="middle">ECC IC</text></p>
+<p><text x="700" y="195" fill="#93c5fd" font-size="11" font-weight="bold" text-anchor="middle">DRAM</text></p>
+<p><text x="770" y="195" fill="#93c5fd" font-size="11" font-weight="bold" text-anchor="middle">DRAM</text></p>
+<p><text x="840" y="195" fill="#93c5fd" font-size="11" font-weight="bold" text-anchor="middle">DRAM</text></p>
+<p><text x="910" y="195" fill="#93c5fd" font-size="11" font-weight="bold" text-anchor="middle">DRAM</text></p>
+<p></svg></p>
+
+<div class="legend-chip-bar">
+<div>🔴 <strong>MCR RCD</strong></div>
+<div>🌸 <strong>MUX DB (Data Buffer DB0~9)</strong></div>
+<div>🟡 <strong>PMIC</strong></div>
+<div>🟢 <strong>SPD Hub</strong></div>
+<div>🟣 <strong>TS0 / TS1</strong></div>
+<div>🔵 <strong>Dual-Rank DRAM & ECC IC</strong></div>
+<p></div></p>
+<p></div></p>
+
+<hr>
+
+<h2>⚡ Section 2. MCRDIMM 소자별 역할 및 2배속 대역폭 동작 원리</h2>
+
+<div class="comp-card-grid">
+
+  <div class="comp-card comp-card-db">
+    <div class="comp-header">
+<p>      <span class="badge badge-db">MCR 핵심 기술</span></p>
+<p>      <span>1. MUX Data Buffer (DB0 ~ DB9)</span></p>
+<p>    </div></p>
+<p>    <p style="font-size: 0.9rem; color: #cbd5e1; line-height: 1.6;"></p>
+<p>      • <strong>핵심 역할:</strong> 2개 랭크(Rank 0 및 Rank 1)의 DRAM 데이터를 <strong>동시에 수신하여 믹싱/다중화(Multiplexing)</strong> 한 후 CPU memory controller로 2배 속도로 전달합니다.<br/></p>
+<p>      • <strong>대역폭 2배의 원리:</strong> 각 랭크가 4.4 GT/s 또는 6.4 GT/s로 각각 전송하는 데이터를 DB 칩이 인터리빙 병합하여 <strong>8.8 GT/s ~ 12.8 GT/s</strong> 초고속 신호로 변환합니다.</p>
+<p>    </p></p>
+<p>  </div></p>
+
+  <div class="comp-card comp-card-rcd">
+    <div class="comp-header">
+<p>      <span class="badge badge-rcd">제어 칩셋</span></p>
+<p>      <span>2. MCR RCD (Registering Clock Driver)</span></p>
+<p>    </div></p>
+<p>    <p style="font-size: 0.9rem; color: #cbd5e1; line-height: 1.6;"></p>
+<p>      • <strong>핵심 역할:</strong> CPU로부터 고속 커맨드/주소 신호를 수신하여 2개 랭크의 DRAM 및 10개 MUX DB 칩의 동기화 멀티플렉싱 타이밍을 정밀 제어합니다.</p>
+<p>    </p></p>
+<p>  </div></p>
+
+  <div class="comp-card comp-card-pmic">
+    <div class="comp-header">
+<p>      <span class="badge badge-pmic">전력 관리</span></p>
+<p>      <span>3. PMIC / SPD Hub / TS0, TS1</span></p>
+<p>    </div></p>
+<p>    <p style="font-size: 0.9rem; color: #cbd5e1; line-height: 1.6;"></p>
+<p>      • 12V ➔ 1.1V 온보드 전력 변환 및 초고속 연산 시 발생하는 발열을 모니터링하여 인텔 Xeon / AMD EPYC AI 서버 플랫폼과 유기적으로 동기화됩니다.</p>
+<p>    </p></p>
+<p>  </div></p>
+
+<p></div></p>
+
+<div class="insight-box">
+  <div class="insight-box-title">💡 RDIMM vs MCRDIMM 비교 Insight</div>
+  <div class="insight-box-text">
+<p>    • 표준 <strong>RDIMM</strong>은 한번에 1개 랭크만 데이터 버스를 점유(4.8~8.0 GT/s)하지만, <strong>MCRDIMM / MRDIMM</strong>은 10개의 MUX DB 칩이 2개 랭크의 데이터를 동시에 퍼올려 처리하므로 동일 소켓 구조에서 <strong>전송 속도가 8.8 ~ 12.8 GT/s로 2배 극대화</strong>됩니다.</p>
+<p>  </div></p>
+<p></div></p>
+
+<hr>
+
+<p>👈 <strong><a href="/dram-overview">DRAM Overview로 돌아가기</a></strong></p>
+
+    </article>
+  </main>
+
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'default' });
+  </script>
+</body>
+</html>

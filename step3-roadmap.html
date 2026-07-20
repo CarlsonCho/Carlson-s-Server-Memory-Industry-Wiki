@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🗺️ Step 3. 주요 기업 플랫폼 로드맵 (Enterprise Roadmap) | AI Server Wiki</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --bg-primary: #0b0f19;
+      --bg-secondary: #111827;
+      --bg-card: #1f2937;
+      --text-primary: #f9fafb;
+      --text-secondary: #9ca3af;
+      --text-muted: #6b7280;
+      --accent: #3b82f6;
+      --accent-hover: #60a5fa;
+      --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+      --border-color: #374151;
+      --code-bg: #111827;
+      --sidebar-width: 280px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.7;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Navigation */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: rgba(17, 24, 39, 0.8);
+      backdrop-filter: blur(12px);
+      border-right: 1px solid var(--border-color);
+      padding: 2rem 1.25rem;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      overflow-y: auto;
+      z-index: 10;
+    }
+
+    .brand {
+      font-size: 1.25rem;
+      font-weight: 700;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-group-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .nav-link:hover {
+      color: var(--text-primary);
+      background-color: rgba(59, 130, 246, 0.1);
+      transform: translateX(4px);
+    }
+
+    .nav-link.active {
+      color: #ffffff;
+      background: var(--accent-gradient);
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    /* Main Content */
+    .main-wrapper {
+      margin-left: var(--sidebar-width);
+      flex: 1;
+      padding: 3rem 4rem;
+      max-width: 1100px;
+    }
+
+    .content {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 3rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Typography & Elements */
+    h1, h2, h3, h4, h5, h6 {
+      color: var(--text-primary);
+      font-weight: 700;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      line-height: 1.3;
+    }
+
+    h1 {
+      font-size: 2.25rem;
+      margin-top: 0;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--border-color);
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    h2 {
+      font-size: 1.6rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    h3 { font-size: 1.25rem; }
+
+    p {
+      margin-bottom: 1.25rem;
+      color: #d1d5db;
+    }
+
+    a {
+      color: var(--accent-hover);
+      text-decoration: none;
+      transition: border-bottom 0.2s ease;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    ul, ol {
+      margin-bottom: 1.25rem;
+      padding-left: 1.5rem;
+      color: #d1d5db;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+
+    blockquote {
+      border-left: 4px solid var(--accent);
+      background: rgba(59, 130, 246, 0.05);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.25rem;
+      border-radius: 0 0.5rem 0.5rem 0;
+      color: #9ca3af;
+      font-style: italic;
+    }
+
+    code {
+      font-family: 'Fira Code', monospace;
+      background: var(--code-bg);
+      color: #f35b04;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.875em;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    pre {
+      background: var(--code-bg);
+      padding: 1.25rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border-color);
+    }
+
+    pre code {
+      background: transparent;
+      padding: 0;
+      border: none;
+      color: #e5e7eb;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.75rem;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border: 1px solid var(--border-color);
+    }
+
+    th {
+      background-color: var(--bg-card);
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    tr:nth-child(even) {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+
+    tr:hover {
+      background-color: rgba(59, 130, 246, 0.05);
+    }
+
+    hr {
+      border: 0;
+      height: 1px;
+      background: var(--border-color);
+      margin: 2rem 0;
+    }
+
+    /* Mermaid Container */
+    .mermaid {
+      background: #ffffff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    @media (max-width: 768px) {
+      body { flex-direction: column; }
+      .sidebar { width: 100%; position: relative; height: auto; }
+      .main-wrapper { margin-left: 0; padding: 1.5rem; }
+      .content { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="brand">⚡ AI Server Wiki</div>
+    <div class="nav-group-title">Documents</div>
+    <div class="nav-links">
+      <a href="ai-server-overview.html" class="nav-link ">AI SERVER OVERVIEW</a>
+<a href="amd-cpu-roadmap.html" class="nav-link ">AMD CPU ROADMAP</a>
+<a href="amd-roadmap.html" class="nav-link ">AMD ROADMAP</a>
+<a href="ampere-roadmap.html" class="nav-link ">AMPERE ROADMAP</a>
+<a href="api-examples.html" class="nav-link ">API EXAMPLES</a>
+<a href="aws-roadmap.html" class="nav-link ">AWS ROADMAP</a>
+<a href="cxl-overview.html" class="nav-link ">CXL OVERVIEW</a>
+<a href="dram-overview.html" class="nav-link ">DRAM OVERVIEW</a>
+<a href="gddr-overview.html" class="nav-link ">GDDR OVERVIEW</a>
+<a href="general-server-overview.html" class="nav-link ">GENERAL SERVER OVERVIEW</a>
+<a href="google-roadmap.html" class="nav-link ">GOOGLE ROADMAP</a>
+<a href="hbm-overview.html" class="nav-link ">HBM OVERVIEW</a>
+<a href="index.html" class="nav-link ">INDEX</a>
+<a href="intel-roadmap.html" class="nav-link ">INTEL ROADMAP</a>
+<a href="lpcamm-overview.html" class="nav-link ">LPCAMM OVERVIEW</a>
+<a href="markdown-examples.html" class="nav-link ">MARKDOWN EXAMPLES</a>
+<a href="mcrdimm-overview.html" class="nav-link ">MCRDIMM OVERVIEW</a>
+<a href="memory-overview.html" class="nav-link ">MEMORY OVERVIEW</a>
+<a href="nand-overview.html" class="nav-link ">NAND OVERVIEW</a>
+<a href="nvidia-blackwell.html" class="nav-link ">NVIDIA BLACKWELL</a>
+<a href="nvidia-hopper.html" class="nav-link ">NVIDIA HOPPER</a>
+<a href="nvidia-roadmap.html" class="nav-link ">NVIDIA ROADMAP</a>
+<a href="nvidia-rubin.html" class="nav-link ">NVIDIA RUBIN</a>
+<a href="rdimm-overview.html" class="nav-link ">RDIMM OVERVIEW</a>
+<a href="socamm-overview.html" class="nav-link ">SOCAMM OVERVIEW</a>
+<a href="step2-market.html" class="nav-link ">STEP2 MARKET</a>
+<a href="step3-roadmap.html" class="nav-link active">STEP3 ROADMAP</a>
+<a href="step4-teardown.html" class="nav-link ">STEP4 TEARDOWN</a>
+    </div>
+  </nav>
+
+  <main class="main-wrapper">
+    <article class="content">
+      <h1>🗺️ Step 3. 주요 기업 플랫폼 로드맵 (Enterprise Roadmap)</h1>
+
+<p>글로벌 테크 거인들은 초거대 생성형 AI 모델의 연산 요구치 급증에 발맞춰 하드웨어 칩셋 및 플랫폼 출시 주기를 기존 2년에서 <strong>1년 단위</strong>로 대폭 단축하고 있습니다. 업계 주요 플레이어들의 가속기 및 서버 플랫폼 개발 로드맵을 정리합니다.</p>
+
+<hr>
+
+<h2>🟢 NVIDIA 가속기 플랫폼 로드맵</h2>
+<p>NVIDIA는 고성능 연산 장치 뿐만 아니라 고속 스위치, 냉각 인프라를 통합 랙(Rack) 솔루션 단위로 설계하여 시장의 표준을 선도하고 있습니다.</p>
+
+<table><thead><tr>
+<th>출시 연도</th>
+<th>아키텍처명</th>
+<th>대표 가속기 명칭</th>
+<th>메모리 사양</th>
+<th>네트워킹 및 통합 스케일</th>
+<th>주요 특징</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>2023</strong></td>
+<td><a href="/nvidia-hopper"><strong>Hopper</strong></a></td>
+<td>H100 / H200</td>
+<td>80GB HBM3 / 141GB HBM3e</td>
+<td>NVLink 4 (900GB/s)</td>
+<td>대규모 LLM 학습 시장을 독점 개화시킨 베스트셀러 플랫폼</td>
+</tr>
+<tr>
+<td><strong>2024 ~ 2025</strong></td>
+<td><a href="/nvidia-blackwell"><strong>Blackwell</strong></a></td>
+<td>B100 / B200 / GB200</td>
+<td>192GB / 384GB HBM3e</td>
+<td>NVLink 5 (1.8TB/s)</td>
+<td>단일 다이에 2개 칩셋을 집적한 형태. GB200 NVL72 액체냉각 시스템 본격 도입</td>
+</tr>
+<tr>
+<td><strong>2026 (E)</strong></td>
+<td><a href="/nvidia-rubin"><strong>Rubin</strong></a></td>
+<td>R100 / GR200</td>
+<td>HBM4 (12단/16단 적층)</td>
+<td>NVLink 6 (초고속 대역폭)</td>
+<td>차세대 HBM4 3D 적층 메모리 표준 채택, 3nm 이하 초미세 공정 적용 예정</td>
+</tr>
+</tbody></table>
+
+<h3>💡 NVIDIA 플랫폼 로드맵의 지향점</h3>
+<p>NVIDIA는 단순 단품 가속기 판매에서 벗어나 72개의 Blackwell GPU와 36개의 Grace CPU를 액체 냉각 배관과 함께 하나의 통합 캐비닛(Rack)으로 구성한 <strong>GB200 NVL72</strong>와 같은 초거대 랙 스케일 아키텍처로 진화하고 있습니다.</p>
+
+<hr>
+
+<h2>🔴 AMD Instinct 로드맵</h2>
+<p>AMD는 업계 최고의 고대역폭 메모리 용량과 개방형 생태계를 앞세워 NVIDIA의 통합 독점 구도에 균열을 내고 있습니다.</p>
+
+<div class="mermaid">
+<p>timeline</p>
+<p>    title AMD Instinct 가속기 로드맵</p>
+<p>    2023 : MI300X (CDNA 3 아키텍처) : 192GB HBM3 탑재, AI 추론 시장 진입 대안 부상</p>
+<p>    2024 H2 : MI325X : 256GB HBM3e 확장, 대역폭 및 추론 성능 대폭 개량</p>
+<p>    2025 (E) : MI350 Series (CDNA 4) : 3nm 공정 전환, FP8/FP4 저정밀도 연산 최적화</p>
+<p>    2026 (E) : MI400 Series (CDNA 5) : 차세대 HBM4 규격 채택 및 완전한 아키텍처 개량</p>
+<p></div></p>
+
+<ul>
+<li><strong>MI300X (2023):</strong> 경쟁 제품인 H100 대비 더 저렴한 가격에 더 큰 메모리 버퍼를 지원하여 Llama-3 등의 대형 오픈소스 모델 추론 인프라 구축의 대안으로 부각.</li>
+<li><strong>MI325X (2024 H2):</strong> 256GB HBM3e를 탑재해 초거대 AI 모델 서빙 성능을 업그레이드하고 양산 돌입.</li>
+<li><strong>MI350 시리즈 (2025 예정):</strong> 차세대 CDNA 4 아키텍처 기반으로 메모리 성능을 확대하고 미세공정 효율을 끌어올려 NVIDIA Blackwell과 정면 대결.</li>
+</ul>
+
+<hr>
+
+<h2>🔵 Intel 가속기 & 가성비 추격</h2>
+<p>인텔은 전통의 CPU 절대 강자에서 가속기 시장에서의 점유율 확보를 위해 투 트랙 전략을 실행하고 있습니다.</p>
+
+<ol>
+<li><strong>Gaudi (가우디) 가성비 가속기 라인업:</strong></li>
+</ol>
+<ul>
+<li><strong>Gaudi 3 (2024):</strong> 5nm 공정 기반으로 제작되어 고성능 연산 대비 경쟁사 GPU의 절반 이하 가격이라는 파격적인 가성비 전략 구사. 특히 대규모 커스텀 AI 모델 인프라에 적합.</li>
+</ul>
+<ol>
+<li><strong>Falcon Shores (팔콘 쇼어) 통합 플랫폼 (2025/2026 예정):</strong></li>
+</ol>
+<ul>
+<li>인텔의 GPU 아키텍처(Xe)와 Gaudi의 장점을 융합하여 개발 중인 진정한 차세대 AI 통합 가속기. 인텔의 차세대 공정 18A 적용 가능성 제기.</li>
+</ul>
+
+<hr>
+
+<h2>🟡 빅테크 CSP 자체 가속기 (ASIC / TPU)</h2>
+<ul>
+<li><strong>Google (TPU v5p -> v6):</strong> AI 학습에 독보적인 효율을 자랑하는 TPU 생태계 구축. 특히 구글의 자체 거대 인공지능인 Gemini 시리즈는 전적으로 TPU 클러스터에서 학습 및 배포됨.</li>
+<li><strong>AWS (Trainium 2):</strong> 아마존 웹 서비스 이용 기업 고객들에게 최저가 학습 비용을 제안하기 위한 용도로, 인공지능 클러스터 랙 스케일 솔루션인 EC2 UltraCluster와 연계 구성.</li>
+</ul>
+
+    </article>
+  </main>
+
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'default' });
+  </script>
+</body>
+</html>

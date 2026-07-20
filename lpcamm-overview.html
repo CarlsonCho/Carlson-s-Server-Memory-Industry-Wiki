@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>💻 LPCAMM2 Overview (PC / 노트북용 차세대 LPDDR 모듈) | AI Server Wiki</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --bg-primary: #0b0f19;
+      --bg-secondary: #111827;
+      --bg-card: #1f2937;
+      --text-primary: #f9fafb;
+      --text-secondary: #9ca3af;
+      --text-muted: #6b7280;
+      --accent: #3b82f6;
+      --accent-hover: #60a5fa;
+      --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+      --border-color: #374151;
+      --code-bg: #111827;
+      --sidebar-width: 280px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.7;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Navigation */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: rgba(17, 24, 39, 0.8);
+      backdrop-filter: blur(12px);
+      border-right: 1px solid var(--border-color);
+      padding: 2rem 1.25rem;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      overflow-y: auto;
+      z-index: 10;
+    }
+
+    .brand {
+      font-size: 1.25rem;
+      font-weight: 700;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-group-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .nav-link:hover {
+      color: var(--text-primary);
+      background-color: rgba(59, 130, 246, 0.1);
+      transform: translateX(4px);
+    }
+
+    .nav-link.active {
+      color: #ffffff;
+      background: var(--accent-gradient);
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    /* Main Content */
+    .main-wrapper {
+      margin-left: var(--sidebar-width);
+      flex: 1;
+      padding: 3rem 4rem;
+      max-width: 1100px;
+    }
+
+    .content {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 3rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Typography & Elements */
+    h1, h2, h3, h4, h5, h6 {
+      color: var(--text-primary);
+      font-weight: 700;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      line-height: 1.3;
+    }
+
+    h1 {
+      font-size: 2.25rem;
+      margin-top: 0;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--border-color);
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    h2 {
+      font-size: 1.6rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    h3 { font-size: 1.25rem; }
+
+    p {
+      margin-bottom: 1.25rem;
+      color: #d1d5db;
+    }
+
+    a {
+      color: var(--accent-hover);
+      text-decoration: none;
+      transition: border-bottom 0.2s ease;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    ul, ol {
+      margin-bottom: 1.25rem;
+      padding-left: 1.5rem;
+      color: #d1d5db;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+
+    blockquote {
+      border-left: 4px solid var(--accent);
+      background: rgba(59, 130, 246, 0.05);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.25rem;
+      border-radius: 0 0.5rem 0.5rem 0;
+      color: #9ca3af;
+      font-style: italic;
+    }
+
+    code {
+      font-family: 'Fira Code', monospace;
+      background: var(--code-bg);
+      color: #f35b04;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.875em;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    pre {
+      background: var(--code-bg);
+      padding: 1.25rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border-color);
+    }
+
+    pre code {
+      background: transparent;
+      padding: 0;
+      border: none;
+      color: #e5e7eb;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.75rem;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border: 1px solid var(--border-color);
+    }
+
+    th {
+      background-color: var(--bg-card);
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    tr:nth-child(even) {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+
+    tr:hover {
+      background-color: rgba(59, 130, 246, 0.05);
+    }
+
+    hr {
+      border: 0;
+      height: 1px;
+      background: var(--border-color);
+      margin: 2rem 0;
+    }
+
+    /* Mermaid Container */
+    .mermaid {
+      background: #ffffff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    @media (max-width: 768px) {
+      body { flex-direction: column; }
+      .sidebar { width: 100%; position: relative; height: auto; }
+      .main-wrapper { margin-left: 0; padding: 1.5rem; }
+      .content { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="brand">⚡ AI Server Wiki</div>
+    <div class="nav-group-title">Documents</div>
+    <div class="nav-links">
+      <a href="ai-server-overview.html" class="nav-link ">AI SERVER OVERVIEW</a>
+<a href="amd-cpu-roadmap.html" class="nav-link ">AMD CPU ROADMAP</a>
+<a href="amd-roadmap.html" class="nav-link ">AMD ROADMAP</a>
+<a href="ampere-roadmap.html" class="nav-link ">AMPERE ROADMAP</a>
+<a href="api-examples.html" class="nav-link ">API EXAMPLES</a>
+<a href="aws-roadmap.html" class="nav-link ">AWS ROADMAP</a>
+<a href="cxl-overview.html" class="nav-link ">CXL OVERVIEW</a>
+<a href="dram-overview.html" class="nav-link ">DRAM OVERVIEW</a>
+<a href="gddr-overview.html" class="nav-link ">GDDR OVERVIEW</a>
+<a href="general-server-overview.html" class="nav-link ">GENERAL SERVER OVERVIEW</a>
+<a href="google-roadmap.html" class="nav-link ">GOOGLE ROADMAP</a>
+<a href="hbm-overview.html" class="nav-link ">HBM OVERVIEW</a>
+<a href="index.html" class="nav-link ">INDEX</a>
+<a href="intel-roadmap.html" class="nav-link ">INTEL ROADMAP</a>
+<a href="lpcamm-overview.html" class="nav-link active">LPCAMM OVERVIEW</a>
+<a href="markdown-examples.html" class="nav-link ">MARKDOWN EXAMPLES</a>
+<a href="mcrdimm-overview.html" class="nav-link ">MCRDIMM OVERVIEW</a>
+<a href="memory-overview.html" class="nav-link ">MEMORY OVERVIEW</a>
+<a href="nand-overview.html" class="nav-link ">NAND OVERVIEW</a>
+<a href="nvidia-blackwell.html" class="nav-link ">NVIDIA BLACKWELL</a>
+<a href="nvidia-hopper.html" class="nav-link ">NVIDIA HOPPER</a>
+<a href="nvidia-roadmap.html" class="nav-link ">NVIDIA ROADMAP</a>
+<a href="nvidia-rubin.html" class="nav-link ">NVIDIA RUBIN</a>
+<a href="rdimm-overview.html" class="nav-link ">RDIMM OVERVIEW</a>
+<a href="socamm-overview.html" class="nav-link ">SOCAMM OVERVIEW</a>
+<a href="step2-market.html" class="nav-link ">STEP2 MARKET</a>
+<a href="step3-roadmap.html" class="nav-link ">STEP3 ROADMAP</a>
+<a href="step4-teardown.html" class="nav-link ">STEP4 TEARDOWN</a>
+    </div>
+  </nav>
+
+  <main class="main-wrapper">
+    <article class="content">
+      <hr>
+<p>title: LPCAMM2 Overview</p>
+<p>description: 차세대 PC/노트북용 LPCAMM2 (Low Power Compression Attached Memory Module) 아키텍처 및 LPDDR5X/6 기반 모듈 분석</p>
+<hr>
+
+<p><style></p>
+<p>.rdimm-board-container {</p>
+<p>  background-color: #0b1329;</p>
+<p>  border: 2px solid #1e293b;</p>
+<p>  border-radius: 14px;</p>
+<p>  padding: 24px;</p>
+<p>  margin: 30px 0;</p>
+<p>  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);</p>
+<p>}</p>
+<p>.board-title {</p>
+<p>  text-align: center;</p>
+<p>  font-size: 1.25rem;</p>
+<p>  font-weight: bold;</p>
+<p>  color: #38bdf8;</p>
+<p>  margin-bottom: 6px;</p>
+<p>}</p>
+<p>.board-subtitle {</p>
+<p>  text-align: center;</p>
+<p>  font-size: 0.88rem;</p>
+<p>  color: #94a3b8;</p>
+<p>  margin-bottom: 22px;</p>
+<p>}</p>
+<p>.comp-card-grid {</p>
+<p>  display: grid;</p>
+<p>  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));</p>
+<p>  gap: 20px;</p>
+<p>  margin: 30px 0;</p>
+<p>}</p>
+<p>.comp-card {</p>
+<p>  background-color: #1e293b;</p>
+<p>  border-left: 4px solid #38bdf8;</p>
+<p>  border-radius: 0 10px 10px 0;</p>
+<p>  padding: 20px;</p>
+<p>  box-shadow: 0 4px 12px rgba(0,0,0,0.2);</p>
+<p>}</p>
+<p>.comp-card-lpcamm { border-left-color: #38bdf8; }</p>
+<p>.comp-card-jedec { border-left-color: #10b981; }</p>
+
+<p>.comp-header {</p>
+<p>  font-size: 1.05rem;</p>
+<p>  font-weight: bold;</p>
+<p>  margin-bottom: 8px;</p>
+<p>  display: flex;</p>
+<p>  align-items: center;</p>
+<p>  gap: 8px;</p>
+<p>}</p>
+<p>.badge {</p>
+<p>  font-size: 0.75rem;</p>
+<p>  padding: 2px 8px;</p>
+<p>  border-radius: 4px;</p>
+<p>  font-weight: bold;</p>
+<p>}</p>
+<p>.badge-lpcamm { background-color: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid #38bdf8; }</p>
+<p>.badge-jedec { background-color: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #10b981; }</p>
+
+<p>.insight-box {</p>
+<p>  background-color: rgba(56, 189, 248, 0.1);</p>
+<p>  border-left: 4px solid #38bdf8;</p>
+<p>  padding: 18px;</p>
+<p>  border-radius: 0 8px 8px 0;</p>
+<p>  margin: 24px 0;</p>
+<p>}</p>
+<p>.insight-box-title {</p>
+<p>  font-weight: bold;</p>
+<p>  color: #38bdf8;</p>
+<p>  margin-bottom: 8px;</p>
+<p>  display: flex;</p>
+<p>  align-items: center;</p>
+<p>  gap: 6px;</p>
+<p>}</p>
+<p>.insight-box-text {</p>
+<p>  font-size: 0.92rem;</p>
+<p>  color: #cbd5e1;</p>
+<p>  margin: 0;</p>
+<p>  line-height: 1.6;</p>
+<p>}</p>
+<p>.legend-chip-bar {</p>
+<p>  display: flex;</p>
+<p>  justify-content: center;</p>
+<p>  flex-wrap: wrap;</p>
+<p>  gap: 16px;</p>
+<p>  margin-top: 16px;</p>
+<p>  padding-top: 12px;</p>
+<p>  border-top: 1px solid #334155;</p>
+<p>  font-size: 0.82rem;</p>
+<p>  color: #cbd5e1;</p>
+<p>}</p>
+<p></style></p>
+
+<h1>💻 LPCAMM2 Overview (PC / 노트북용 차세대 LPDDR 모듈)</h1>
+
+<p><strong>LPCAMM2 (Low Power Compression Attached Memory Module)</strong> 는 JEDEC(국제반도체표준협의기구)에서 표준화한 <strong>클라이언트 PC, 프리미엄 AI 노트북 및 모바일 워크스테이션용 차세대 착탈식 메모리 모듈</strong>입니다. 기존 PC용 SODIMM 대비 <strong>보드 면적을 64% 절감</strong>하고 <strong>전력 효율을 61% 대폭 개선</strong>하면서도 128-bit 단일 모듈 듀얼 채널 구성을 제공합니다.</p>
+
+<hr>
+
+<h2>🛠️ Section 1. LPCAMM2 모듈 PCB 물리 토폴로지 다이어그램</h2>
+
+<p>아래 다이어그램은 <strong>JEDEC 표준 LPCAMM2 규격</strong>에 따른 모듈 기판 상의 <strong>LPDDR5X/6 칩셋</strong>, LP PMIC, SPD Hub 및 <strong>LGA 압착 그리드(Compression Connector)</strong> 구조도입니다.</p>
+
+<div class="rdimm-board-container">
+<div class="board-title">🟩 JEDEC LPCAMM2 PCB 물리 토폴로지 (Board Topology)</div>
+<div class="board-subtitle">※ 클라이언트 PC / 노트북 메인보드 밀착형 128-bit 듀얼 채널 LPCAMM2 레이아웃</div>
+
+<p><svg viewBox="0 0 1000 420" width="100%" height="auto" style="border-radius: 10px; overflow: hidden; background: #0f172a; border: 2px solid #38bdf8;"></p>
+
+<p><!-- Substrate Base --></p>
+<p><rect x="150" y="30" width="700" height="340" rx="16" fill="#1e293b" stroke="#38bdf8" stroke-width="2.5"/></p>
+
+<p><!-- Top Mounting Screw Holes --></p>
+<p><circle cx="200" cy="70" r="14" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/></p>
+<p><circle cx="800" cy="70" r="14" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/></p>
+
+<p><!-- Center LGA Compression Connector Grid (Bottom Land Contact Pads) --></p>
+<p><rect x="350" y="240" width="300" height="100" rx="8" fill="#0369a1" stroke="#fbbf24" stroke-width="2" stroke-dasharray="4 4"/></p>
+<p><text x="500" y="295" fill="#fbbf24" font-size="13" font-weight="bold" text-anchor="middle">JEDEC Compression Connector (Pin-less Contact Grid)</text></p>
+
+<p><!-- 1. LPDDR5X BGA Chips Array (4 Packages for 128-bit Dual Channel) --></p>
+<p><g fill="#0c4a6e" stroke="#38bdf8" stroke-width="2"></p>
+<p><rect x="220" y="110" width="110" height="110" rx="6"/></p>
+<p><rect x="360" y="110" width="110" height="110" rx="6"/></p>
+<p><rect x="530" y="110" width="110" height="110" rx="6"/></p>
+<p><rect x="670" y="110" width="110" height="110" rx="6"/></p>
+<p></g></p>
+
+<p><text x="275" y="170" fill="#bae6fd" font-size="12" font-weight="bold" text-anchor="middle">LPDDR5X</text></p>
+<p><text x="415" y="170" fill="#bae6fd" font-size="12" font-weight="bold" text-anchor="middle">LPDDR5X</text></p>
+<p><text x="585" y="170" fill="#bae6fd" font-size="12" font-weight="bold" text-anchor="middle">LPDDR5X</text></p>
+<p><text x="725" y="170" fill="#bae6fd" font-size="12" font-weight="bold" text-anchor="middle">LPDDR5X</text></p>
+
+<p><!-- 2. Low-Power PMIC (Center Top) --></p>
+<p><g></p>
+<p><rect x="445" y="50" width="110" height="45" rx="5" fill="#78350f" stroke="#f59e0b" stroke-width="2"/></p>
+<p><text x="500" y="78" fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle">LP PMIC</text></p>
+<p></g></p>
+
+<p><!-- 3. SPD Hub --></p>
+<p><g></p>
+<p><rect x="300" y="50" width="85" height="40" rx="4" fill="#064e3b" stroke="#10b981" stroke-width="2"/></p>
+<p><text x="342" y="75" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">SPD Hub</text></p>
+<p></g></p>
+
+<p></svg></p>
+
+<div class="legend-chip-bar">
+<div>🔵 <strong>LPCAMM2 PCB:</strong> JEDEC 표준 PC/노트북용 차세대 모듈</div>
+<div>💠 <strong>LPDDR5X / LPDDR6:</strong> 8.5 ~ 9.6 GT/s 초고속 저전력 메모리</div>
+<div>🟡 <strong>LP PMIC:</strong> 온보드 저전력 전력 관리 IC</div>
+<div>🟧 <strong>Compression Connector:</strong> 나사 체결 압착식 소켓 커넥터</div>
+<p></div></p>
+<p></div></p>
+
+<hr>
+
+<h2>⚡ Section 2. LPCAMM2 핵심 장점 및 PC 시장 패러다임 변화</h2>
+
+<div class="comp-card-grid">
+
+  <div class="comp-card comp-card-lpcamm">
+    <div class="comp-header">
+<p>      <span class="badge badge-lpcamm">SODIMM 대체</span></p>
+<p>      <span>1. PC 시장의 혁신적 폼팩터</span></p>
+<p>    </div></p>
+<p>    <p style="font-size: 0.9rem; color: #cbd5e1; line-height: 1.6;"></p>
+<p>      • <strong>단일 모듈로 128-bit 듀얼채널:</strong> 기존 SODIMM은 2개를 장착해야 128-bit 듀얼 채널이 구성되었으나, LPCAMM2는 <strong>단 1개의 모듈만으로 128-bit 듀얼 채널을 완성</strong>합니다.<br/></p>
+<p>      • <strong>탈부착 가능:</strong> 기존 LPDDR이 메인보드에 온보드 수동 납땜되어 용량 업그레이드가 불가능했던 한계를 완전히 극복했습니다.</p>
+<p>    </p></p>
+<p>  </div></p>
+
+  <div class="comp-card comp-card-jedec">
+    <div class="comp-header">
+<p>      <span class="badge badge-jedec">전력 & 공간 절감</span></p>
+<p>      <span>2. 전력 61% 절감 & 두께 감소</span></p>
+<p>    </div></p>
+<p>    <p style="font-size: 0.9rem; color: #cbd5e1; line-height: 1.6;"></p>
+<p>      • 기존 SODIMM 대비 <strong>기판 면적 64% 절감</strong>, <strong>대기 전력 및 동작 전력 61% 절감</strong>으로 AI 노트북의 배터리 사용 시간을 크게 늘려줍니다.</p>
+<p>    </p></p>
+<p>  </div></p>
+
+<p></div></p>
+
+<hr>
+
+<p>👈 <strong><a href="/dram-overview">DRAM Overview로 돌아가기</a></strong></p>
+
+    </article>
+  </main>
+
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'default' });
+  </script>
+</body>
+</html>

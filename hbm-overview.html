@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>⚡ HBM Overview (High Bandwidth Memory 초고대역폭 메모리) | AI Server Wiki</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --bg-primary: #0b0f19;
+      --bg-secondary: #111827;
+      --bg-card: #1f2937;
+      --text-primary: #f9fafb;
+      --text-secondary: #9ca3af;
+      --text-muted: #6b7280;
+      --accent: #3b82f6;
+      --accent-hover: #60a5fa;
+      --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+      --border-color: #374151;
+      --code-bg: #111827;
+      --sidebar-width: 280px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.7;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Navigation */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: rgba(17, 24, 39, 0.8);
+      backdrop-filter: blur(12px);
+      border-right: 1px solid var(--border-color);
+      padding: 2rem 1.25rem;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      overflow-y: auto;
+      z-index: 10;
+    }
+
+    .brand {
+      font-size: 1.25rem;
+      font-weight: 700;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-group-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .nav-link:hover {
+      color: var(--text-primary);
+      background-color: rgba(59, 130, 246, 0.1);
+      transform: translateX(4px);
+    }
+
+    .nav-link.active {
+      color: #ffffff;
+      background: var(--accent-gradient);
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    /* Main Content */
+    .main-wrapper {
+      margin-left: var(--sidebar-width);
+      flex: 1;
+      padding: 3rem 4rem;
+      max-width: 1100px;
+    }
+
+    .content {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 3rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Typography & Elements */
+    h1, h2, h3, h4, h5, h6 {
+      color: var(--text-primary);
+      font-weight: 700;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      line-height: 1.3;
+    }
+
+    h1 {
+      font-size: 2.25rem;
+      margin-top: 0;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--border-color);
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    h2 {
+      font-size: 1.6rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    h3 { font-size: 1.25rem; }
+
+    p {
+      margin-bottom: 1.25rem;
+      color: #d1d5db;
+    }
+
+    a {
+      color: var(--accent-hover);
+      text-decoration: none;
+      transition: border-bottom 0.2s ease;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    ul, ol {
+      margin-bottom: 1.25rem;
+      padding-left: 1.5rem;
+      color: #d1d5db;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+
+    blockquote {
+      border-left: 4px solid var(--accent);
+      background: rgba(59, 130, 246, 0.05);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.25rem;
+      border-radius: 0 0.5rem 0.5rem 0;
+      color: #9ca3af;
+      font-style: italic;
+    }
+
+    code {
+      font-family: 'Fira Code', monospace;
+      background: var(--code-bg);
+      color: #f35b04;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.875em;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    pre {
+      background: var(--code-bg);
+      padding: 1.25rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border-color);
+    }
+
+    pre code {
+      background: transparent;
+      padding: 0;
+      border: none;
+      color: #e5e7eb;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.75rem;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border: 1px solid var(--border-color);
+    }
+
+    th {
+      background-color: var(--bg-card);
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    tr:nth-child(even) {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+
+    tr:hover {
+      background-color: rgba(59, 130, 246, 0.05);
+    }
+
+    hr {
+      border: 0;
+      height: 1px;
+      background: var(--border-color);
+      margin: 2rem 0;
+    }
+
+    /* Mermaid Container */
+    .mermaid {
+      background: #ffffff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    @media (max-width: 768px) {
+      body { flex-direction: column; }
+      .sidebar { width: 100%; position: relative; height: auto; }
+      .main-wrapper { margin-left: 0; padding: 1.5rem; }
+      .content { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="brand">⚡ AI Server Wiki</div>
+    <div class="nav-group-title">Documents</div>
+    <div class="nav-links">
+      <a href="ai-server-overview.html" class="nav-link ">AI SERVER OVERVIEW</a>
+<a href="amd-cpu-roadmap.html" class="nav-link ">AMD CPU ROADMAP</a>
+<a href="amd-roadmap.html" class="nav-link ">AMD ROADMAP</a>
+<a href="ampere-roadmap.html" class="nav-link ">AMPERE ROADMAP</a>
+<a href="api-examples.html" class="nav-link ">API EXAMPLES</a>
+<a href="aws-roadmap.html" class="nav-link ">AWS ROADMAP</a>
+<a href="cxl-overview.html" class="nav-link ">CXL OVERVIEW</a>
+<a href="dram-overview.html" class="nav-link ">DRAM OVERVIEW</a>
+<a href="gddr-overview.html" class="nav-link ">GDDR OVERVIEW</a>
+<a href="general-server-overview.html" class="nav-link ">GENERAL SERVER OVERVIEW</a>
+<a href="google-roadmap.html" class="nav-link ">GOOGLE ROADMAP</a>
+<a href="hbm-overview.html" class="nav-link active">HBM OVERVIEW</a>
+<a href="index.html" class="nav-link ">INDEX</a>
+<a href="intel-roadmap.html" class="nav-link ">INTEL ROADMAP</a>
+<a href="lpcamm-overview.html" class="nav-link ">LPCAMM OVERVIEW</a>
+<a href="markdown-examples.html" class="nav-link ">MARKDOWN EXAMPLES</a>
+<a href="mcrdimm-overview.html" class="nav-link ">MCRDIMM OVERVIEW</a>
+<a href="memory-overview.html" class="nav-link ">MEMORY OVERVIEW</a>
+<a href="nand-overview.html" class="nav-link ">NAND OVERVIEW</a>
+<a href="nvidia-blackwell.html" class="nav-link ">NVIDIA BLACKWELL</a>
+<a href="nvidia-hopper.html" class="nav-link ">NVIDIA HOPPER</a>
+<a href="nvidia-roadmap.html" class="nav-link ">NVIDIA ROADMAP</a>
+<a href="nvidia-rubin.html" class="nav-link ">NVIDIA RUBIN</a>
+<a href="rdimm-overview.html" class="nav-link ">RDIMM OVERVIEW</a>
+<a href="socamm-overview.html" class="nav-link ">SOCAMM OVERVIEW</a>
+<a href="step2-market.html" class="nav-link ">STEP2 MARKET</a>
+<a href="step3-roadmap.html" class="nav-link ">STEP3 ROADMAP</a>
+<a href="step4-teardown.html" class="nav-link ">STEP4 TEARDOWN</a>
+    </div>
+  </nav>
+
+  <main class="main-wrapper">
+    <article class="content">
+      <hr>
+<p>title: HBM Overview</p>
+<p>description: 차세대 HBM3e / HBM4 (고대역폭 메모리) 패키징 구조, 2.5D/3D TSV 적층, Custom Base Die 및 2048-bit 버스 아키텍처 분석</p>
+<hr>
+
+<p><style></p>
+<p>.rdimm-board-container {</p>
+<p>  background-color: #0b1329;</p>
+<p>  border: 2px solid #1e293b;</p>
+<p>  border-radius: 14px;</p>
+<p>  padding: 24px;</p>
+<p>  margin: 30px 0;</p>
+<p>  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);</p>
+<p>}</p>
+<p>.board-title {</p>
+<p>  text-align: center;</p>
+<p>  font-size: 1.25rem;</p>
+<p>  font-weight: bold;</p>
+<p>  color: #38bdf8;</p>
+<p>  margin-bottom: 6px;</p>
+<p>}</p>
+<p>.board-subtitle {</p>
+<p>  text-align: center;</p>
+<p>  font-size: 0.88rem;</p>
+<p>  color: #94a3b8;</p>
+<p>  margin-bottom: 22px;</p>
+<p>}</p>
+<p>.comp-card-grid {</p>
+<p>  display: grid;</p>
+<p>  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));</p>
+<p>  gap: 20px;</p>
+<p>  margin: 30px 0;</p>
+<p>}</p>
+<p>.comp-card {</p>
+<p>  background-color: #1e293b;</p>
+<p>  border-left: 4px solid #38bdf8;</p>
+<p>  border-radius: 0 10px 10px 0;</p>
+<p>  padding: 20px;</p>
+<p>  box-shadow: 0 4px 12px rgba(0,0,0,0.2);</p>
+<p>}</p>
+<p>.comp-card-hbm { border-left-color: #3b82f6; }</p>
+<p>.comp-card-base { border-left-color: #ef4444; }</p>
+<p>.comp-card-tsv { border-left-color: #f59e0b; }</p>
+<p>.comp-card-cowos { border-left-color: #10b981; }</p>
+
+<p>.comp-header {</p>
+<p>  font-size: 1.05rem;</p>
+<p>  font-weight: bold;</p>
+<p>  margin-bottom: 8px;</p>
+<p>  display: flex;</p>
+<p>  align-items: center;</p>
+<p>  gap: 8px;</p>
+<p>}</p>
+<p>.badge {</p>
+<p>  font-size: 0.75rem;</p>
+<p>  padding: 2px 8px;</p>
+<p>  border-radius: 4px;</p>
+<p>  font-weight: bold;</p>
+<p>}</p>
+<p>.badge-hbm { background-color: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid #3b82f6; }</p>
+<p>.badge-base { background-color: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid #ef4444; }</p>
+<p>.badge-tsv { background-color: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid #f59e0b; }</p>
+<p>.badge-cowos { background-color: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #10b981; }</p>
+
+<p>.insight-box {</p>
+<p>  background-color: rgba(59, 130, 246, 0.1);</p>
+<p>  border-left: 4px solid #3b82f6;</p>
+<p>  padding: 18px;</p>
+<p>  border-radius: 0 8px 8px 0;</p>
+<p>  margin: 24px 0;</p>
+<p>}</p>
+<p>.insight-box-title {</p>
+<p>  font-weight: bold;</p>
+<p>  color: #3b82f6;</p>
+<p>  margin-bottom: 8px;</p>
+<p>  display: flex;</p>
+<p>  align-items: center;</p>
+<p>  gap: 6px;</p>
+<p>}</p>
+<p>.insight-box-text {</p>
+<p>  font-size: 0.92rem;</p>
+<p>  color: #cbd5e1;</p>
+<p>  margin: 0;</p>
+<p>  line-height: 1.6;</p>
+<p>}</p>
+<p>.legend-chip-bar {</p>
+<p>  display: flex;</p>
+<p>  justify-content: center;</p>
+<p>  flex-wrap: wrap;</p>
+<p>  gap: 16px;</p>
+<p>  margin-top: 16px;</p>
+<p>  padding-top: 12px;</p>
+<p>  border-top: 1px solid #334155;</p>
+<p>  font-size: 0.82rem;</p>
+<p>  color: #cbd5e1;</p>
+<p>}</p>
+<p></style></p>
+
+<h1>⚡ HBM Overview (High Bandwidth Memory 초고대역폭 메모리)</h1>
+
+<p><strong>HBM (High Bandwidth Memory)</strong> 은 실리콘 관통 전극(<strong>TSV</strong>) 기술을 이용하여 DRAM 다이(Die)를 수직으로 8단, 12단, 16단으로 적층한 후 GPU/NPU와 2.5D 실리콘 인터포저(CoWoS) 상에서 통합하는 AI 전용 초고속 메모리입니다. 차세대 <strong>HBM4</strong>부터는 파운드리 <strong>Custom Logic Base Die</strong> 및 <strong>2048-bit</strong> 인터페이스를 적용하여 대역폭이 <strong>2.0 TB/s 이상</strong>으로 대폭 확장됩니다.</p>
+
+<hr>
+
+<h2>🛠️ Section 1. 2.5D CoWoS 및 3D HBM4 패키지 구조 다이어그램</h2>
+
+<p>아래 다이어그램은 <strong>GPU SoC</strong>와 <strong>HBM4 3D Stack (Base Logic Die + 12H DRAM Stack)</strong> 이 2.5D 실리콘 인터포저 상에 통합 배치된 물리 패키징 횡단면 구조입니다.</p>
+
+<div class="rdimm-board-container">
+<div class="board-title">🟦 HBM4 3D 적층 & 2.5D CoWoS 시스템 패키징 구조 (Cross-Section Topology)</div>
+<div class="board-subtitle">※ 파운드리 Custom Logic Base Die + 12단 TSV DRAM 수직 적층 + 실리콘 인터포저 버스</div>
+
+<p><svg viewBox="0 0 1000 460" width="100%" height="auto" style="border-radius: 10px; overflow: hidden; background: #0f172a; border: 2px solid #3b82f6;"></p>
+
+<p><!-- Package Substrate Base --></p>
+<p><rect x="30" y="380" width="940" height="40" rx="4" fill="#1e293b" stroke="#64748b" stroke-width="2"/></p>
+<p><text x="500" y="405" fill="#94a3b8" font-size="13" font-weight="bold" text-anchor="middle">Package Substrate (BGA Ball Contact to System Mainboard)</text></p>
+
+<p><!-- 2.5D Silicon Interposer --></p>
+<p><rect x="60" y="310" width="880" height="45" rx="4" fill="#0284c7" stroke="#38bdf8" stroke-width="2"/></p>
+<p><text x="500" y="337" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">2.5D Silicon Interposer (Ultra-Dense Sub-Micron Interconnect Traces)</text></p>
+
+<p><!-- Microbumps Array --></p>
+<p><g fill="#fbbf24"></p>
+<p><circle cx="150" cy="365" r="4"/> <circle cx="200" cy="365" r="4"/> <circle cx="250" cy="365" r="4"/></p>
+<p><circle cx="350" cy="365" r="4"/> <circle cx="400" cy="365" r="4"/> <circle cx="450" cy="365" r="4"/></p>
+<p><circle cx="550" cy="365" r="4"/> <circle cx="600" cy="365" r="4"/> <circle cx="650" cy="365" r="4"/></p>
+<p><circle cx="750" cy="365" r="4"/> <circle cx="800" cy="365" r="4"/> <circle cx="850" cy="365" r="4"/></p>
+<p></g></p>
+
+<p><!-- Left GPU / NPU SoC Chip --></p>
+<p><g></p>
+<p><rect x="80" y="120" width="360" height="170" rx="8" fill="#1e3a8a" stroke="#60a5fa" stroke-width="3"/></p>
+<p><text x="260" y="195" fill="#ffffff" font-size="20" font-weight="bold" text-anchor="middle">GPU / NPU SoC Die</text></p>
+<p><text x="260" y="220" fill="#93c5fd" font-size="12" text-anchor="middle">(NVIDIA Blackwell / Rubin, AMD Instinct)</text></p>
+<p></g></p>
+
+<p><!-- Right HBM4 3D Stack Package --></p>
+<p><g></p>
+<p><!-- HBM Custom Logic Base Die (Foundry 3nm/4nm) --></p>
+<p><rect x="520" y="240" width="400" height="50" rx="6" fill="#991b1b" stroke="#ef4444" stroke-width="3"/></p>
+<p><text x="720" y="270" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">Custom Logic Base Die (Foundry TSMC 3nm/삼성 4nm)</text></p>
+
+<p><!-- 12H Vertical DRAM Stack Layers --></p>
+<p><rect x="540" y="195" width="360" height="35" rx="3" fill="#0f4c81" stroke="#38bdf8" stroke-width="1.5"/></p>
+<p><text x="720" y="217" fill="#e0f2fe" font-size="11" font-weight="bold" text-anchor="middle">DRAM Core Die 12 (Top Layer)</text></p>
+
+<p><rect x="540" y="155" width="360" height="35" rx="3" fill="#0f4c81" stroke="#38bdf8" stroke-width="1.5"/></p>
+<p><text x="720" y="177" fill="#e0f2fe" font-size="11" font-weight="bold" text-anchor="middle">DRAM Core Die 2 ~ 11 Stack (TSV Vias Connected)</text></p>
+
+<p><rect x="540" y="115" width="360" height="35" rx="3" fill="#0f4c81" stroke="#38bdf8" stroke-width="1.5"/></p>
+<p><text x="720" y="137" fill="#e0f2fe" font-size="11" font-weight="bold" text-anchor="middle">DRAM Core Die 1 (Bottom Layer)</text></p>
+
+<p><!-- TSV Copper Vias (Vertical Vias) --></p>
+<p><g stroke="#f59e0b" stroke-width="2" stroke-dasharray="3 3"></p>
+<line x1="600" y1="115" x2="600" y2="240"/>
+<line x1="680" y1="115" x2="680" y2="240"/>
+<line x1="760" y1="115" x2="760" y2="240"/>
+<line x1="840" y1="115" x2="840" y2="240"/>
+<p></g></p>
+<p></g></p>
+
+<p><!-- 2048-bit Ultra Wide Bus Lines between GPU and HBM --></p>
+<p><g stroke="#ef4444" stroke-width="3"></p>
+<p><path d="M 440 270 L 520 270"/></p>
+<p><text x="480" y="260" fill="#fca5a5" font-size="11" font-weight="bold" text-anchor="middle">2048-bit Bus</text></p>
+<p></g></p>
+
+<p></svg></p>
+
+<div class="legend-chip-bar">
+<div>🔵 <strong>GPU / NPU SoC:</strong> 병렬 연산 코어</div>
+<div>🔴 <strong>Custom Logic Base Die:</strong> HBM4 파운드리 베이스 다이</div>
+<div>🔷 <strong>DRAM Core Stack:</strong> 12H/16H TSV 적층 다이</div>
+<div>🟡 <strong>TSV Vias & Microbumps:</strong> 수직/수평 물리 인터커넥트</div>
+<div>💠 <strong>2.5D Interposer:</strong> 2048-bit 초고대역폭 통신 버스</div>
+<p></div></p>
+<p></div></p>
+
+<hr>
+
+<h2>⚡ Section 2. HBM 핵심 소자 및 차세대 HBM4 혁신 포인트</h2>
+
+<div class="comp-card-grid">
+
+  <div class="comp-card comp-card-base">
+    <div class="comp-header">
+<p>      <span class="badge badge-base">HBM4 대혁신</span></p>
+<p>      <span>1. Custom Logic Base Die (파운드리 베이스 다이)</span></p>
+<p>    </div></p>
+<p>    <p style="font-size: 0.9rem; color: #cbd5e1; line-height: 1.6;"></p>
+<p>      • <strong>파운드리 선단 공정 도입:</strong> HBM3e까지는 메모리 공정 기반 베이스 다이를 사용했으나, HBM4부터는 <strong>TSMC 3nm / 삼성 4nm 파운드리 공정</strong>으로 제작된 커스텀 로직 다이를 채택합니다.<br/></p>
+<p>      • <strong>GPU 맞춤형 연산 유닛 탑재:</strong> 베이스 다이 내부에 DFT 테스트 회로 및 맞춤형 IP를 직접 집적하여 신호 지터 억제 및 전력 효율을 극대화합니다.</p>
+<p>    </p></p>
+<p>  </div></p>
+
+  <div class="comp-card comp-card-hbm">
+    <div class="comp-header">
+<p>      <span class="badge badge-hbm">대역폭 2배 확장</span></p>
+<p>      <span>2. 2048-bit 버스 폭 & TSV 적층</span></p>
+<p>    </div></p>
+<p>    <p style="font-size: 0.9rem; color: #cbd5e1; line-height: 1.6;"></p>
+<p>      • <strong>2048-bit 물리 버스:</strong> HBM3e의 1024-bit 버스 대비 <strong>물리적 신호 핀 수가 2배로 확장</strong>되어 동일 핀 속도에서도 대역폭이 2.0 TB/s 이상으로 늘어납니다.<br/></p>
+<p>      • <strong>MR-MUF & 하이브리드 본딩:</strong> 12단/16단 극미세 칩 간격을 실리콘 관통 전극(TSV)과 에폭시 액상 수지로 메우거나 칩 간 직접 금속 본딩(Hybrid Bonding)으로 연결합니다.</p>
+<p>    </p></p>
+<p>  </div></p>
+
+<p></div></p>
+
+<div class="insight-box">
+  <div class="insight-box-title">💡 GDDR vs HBM 비교 Insight</div>
+  <div class="insight-box-text">
+<p>    • <strong>GDDR7:</strong> 32-bit 전용 신호선을 통해 핀당 32 GT/s 이상의 초고속 핀 속도로 작동하지만 대역폭 한계가 존재합니다.<br/></p>
+<p>    • <strong>HBM4:</strong> 핀당 속도는 8~10 GT/s 수준이나, 수천 개의 TSV를 통해 <strong>2048-bit의 압도적인 물리 버스폭</strong>을 형성하여 단일 팩 당 2.0 TB/s 이상의 초고대역폭을 구현합니다.</p>
+<p>  </div></p>
+<p></div></p>
+
+<hr>
+
+<p>👈 <strong><a href="/dram-overview">DRAM Overview로 돌아가기</a></strong></p>
+
+    </article>
+  </main>
+
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'default' });
+  </script>
+</body>
+</html>

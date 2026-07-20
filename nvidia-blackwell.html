@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🟢 NVIDIA Blackwell 아키텍처 (B200 & GB200) | AI Server Wiki</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --bg-primary: #0b0f19;
+      --bg-secondary: #111827;
+      --bg-card: #1f2937;
+      --text-primary: #f9fafb;
+      --text-secondary: #9ca3af;
+      --text-muted: #6b7280;
+      --accent: #3b82f6;
+      --accent-hover: #60a5fa;
+      --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+      --border-color: #374151;
+      --code-bg: #111827;
+      --sidebar-width: 280px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.7;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Navigation */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: rgba(17, 24, 39, 0.8);
+      backdrop-filter: blur(12px);
+      border-right: 1px solid var(--border-color);
+      padding: 2rem 1.25rem;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      overflow-y: auto;
+      z-index: 10;
+    }
+
+    .brand {
+      font-size: 1.25rem;
+      font-weight: 700;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-group-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .nav-link:hover {
+      color: var(--text-primary);
+      background-color: rgba(59, 130, 246, 0.1);
+      transform: translateX(4px);
+    }
+
+    .nav-link.active {
+      color: #ffffff;
+      background: var(--accent-gradient);
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    /* Main Content */
+    .main-wrapper {
+      margin-left: var(--sidebar-width);
+      flex: 1;
+      padding: 3rem 4rem;
+      max-width: 1100px;
+    }
+
+    .content {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 3rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Typography & Elements */
+    h1, h2, h3, h4, h5, h6 {
+      color: var(--text-primary);
+      font-weight: 700;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      line-height: 1.3;
+    }
+
+    h1 {
+      font-size: 2.25rem;
+      margin-top: 0;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--border-color);
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    h2 {
+      font-size: 1.6rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    h3 { font-size: 1.25rem; }
+
+    p {
+      margin-bottom: 1.25rem;
+      color: #d1d5db;
+    }
+
+    a {
+      color: var(--accent-hover);
+      text-decoration: none;
+      transition: border-bottom 0.2s ease;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    ul, ol {
+      margin-bottom: 1.25rem;
+      padding-left: 1.5rem;
+      color: #d1d5db;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+
+    blockquote {
+      border-left: 4px solid var(--accent);
+      background: rgba(59, 130, 246, 0.05);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.25rem;
+      border-radius: 0 0.5rem 0.5rem 0;
+      color: #9ca3af;
+      font-style: italic;
+    }
+
+    code {
+      font-family: 'Fira Code', monospace;
+      background: var(--code-bg);
+      color: #f35b04;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.875em;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    pre {
+      background: var(--code-bg);
+      padding: 1.25rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border-color);
+    }
+
+    pre code {
+      background: transparent;
+      padding: 0;
+      border: none;
+      color: #e5e7eb;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.75rem;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border: 1px solid var(--border-color);
+    }
+
+    th {
+      background-color: var(--bg-card);
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    tr:nth-child(even) {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+
+    tr:hover {
+      background-color: rgba(59, 130, 246, 0.05);
+    }
+
+    hr {
+      border: 0;
+      height: 1px;
+      background: var(--border-color);
+      margin: 2rem 0;
+    }
+
+    /* Mermaid Container */
+    .mermaid {
+      background: #ffffff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    @media (max-width: 768px) {
+      body { flex-direction: column; }
+      .sidebar { width: 100%; position: relative; height: auto; }
+      .main-wrapper { margin-left: 0; padding: 1.5rem; }
+      .content { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="brand">⚡ AI Server Wiki</div>
+    <div class="nav-group-title">Documents</div>
+    <div class="nav-links">
+      <a href="ai-server-overview.html" class="nav-link ">AI SERVER OVERVIEW</a>
+<a href="amd-cpu-roadmap.html" class="nav-link ">AMD CPU ROADMAP</a>
+<a href="amd-roadmap.html" class="nav-link ">AMD ROADMAP</a>
+<a href="ampere-roadmap.html" class="nav-link ">AMPERE ROADMAP</a>
+<a href="api-examples.html" class="nav-link ">API EXAMPLES</a>
+<a href="aws-roadmap.html" class="nav-link ">AWS ROADMAP</a>
+<a href="cxl-overview.html" class="nav-link ">CXL OVERVIEW</a>
+<a href="dram-overview.html" class="nav-link ">DRAM OVERVIEW</a>
+<a href="gddr-overview.html" class="nav-link ">GDDR OVERVIEW</a>
+<a href="general-server-overview.html" class="nav-link ">GENERAL SERVER OVERVIEW</a>
+<a href="google-roadmap.html" class="nav-link ">GOOGLE ROADMAP</a>
+<a href="hbm-overview.html" class="nav-link ">HBM OVERVIEW</a>
+<a href="index.html" class="nav-link ">INDEX</a>
+<a href="intel-roadmap.html" class="nav-link ">INTEL ROADMAP</a>
+<a href="lpcamm-overview.html" class="nav-link ">LPCAMM OVERVIEW</a>
+<a href="markdown-examples.html" class="nav-link ">MARKDOWN EXAMPLES</a>
+<a href="mcrdimm-overview.html" class="nav-link ">MCRDIMM OVERVIEW</a>
+<a href="memory-overview.html" class="nav-link ">MEMORY OVERVIEW</a>
+<a href="nand-overview.html" class="nav-link ">NAND OVERVIEW</a>
+<a href="nvidia-blackwell.html" class="nav-link active">NVIDIA BLACKWELL</a>
+<a href="nvidia-hopper.html" class="nav-link ">NVIDIA HOPPER</a>
+<a href="nvidia-roadmap.html" class="nav-link ">NVIDIA ROADMAP</a>
+<a href="nvidia-rubin.html" class="nav-link ">NVIDIA RUBIN</a>
+<a href="rdimm-overview.html" class="nav-link ">RDIMM OVERVIEW</a>
+<a href="socamm-overview.html" class="nav-link ">SOCAMM OVERVIEW</a>
+<a href="step2-market.html" class="nav-link ">STEP2 MARKET</a>
+<a href="step3-roadmap.html" class="nav-link ">STEP3 ROADMAP</a>
+<a href="step4-teardown.html" class="nav-link ">STEP4 TEARDOWN</a>
+    </div>
+  </nav>
+
+  <main class="main-wrapper">
+    <article class="content">
+      <h1>🟢 NVIDIA Blackwell 아키텍처 (B200 & GB200)</h1>
+
+<p>NVIDIA Blackwell 아키텍처는 단일 가속기 단품을 넘어 랙(Rack) 전체가 하나의 일체형 초거대 슈퍼컴퓨터로 작동하도록 설계된 최초의 AI 가속기 플랫폼입니다. 액체 냉각(Liquid Cooling) 기술이 아키텍처 기본 요건으로 내장되어 있습니다.</p>
+
+<hr>
+
+<h2>1. Blackwell 아키텍처 개요</h2>
+<p>Blackwell 아키텍처는 TSMC의 2.5D 어드밴스드 패키징 기술인 CoWoS-L을 활용하여, 2개의 독립된 GPU 다이를 하나의 패키지로 연결해 단일 GPU처럼 동작하도록 설계되었습니다.</p>
+
+<ul>
+<li><strong>Dual-die CoWoS-L 설계:</strong> 두 다이 간의 통신 속도가 10TB/s에 달해 단일 다이 수준의 레이턴시(지연 시간)를 유지하며 2080억 개의 트랜지스터를 하나의 가속기로 통합했습니다.</li>
+<li><strong>메모리 아키텍처:</strong> 8개의 HBM3e 메모리 스택이 장착되어 최대 <strong>192GB HBM3e</strong> 용량과 8TB/s의 대역폭을 보장합니다.</li>
+<li><strong>GB200 Superchip (슈퍼칩):</strong> 1개의 Grace CPU와 2개의 Blackwell GPU를 단일 메인보드(트레이) 위에 물리적으로 접착 및 통합한 형태입니다.</li>
+</ul>
+
+<hr>
+
+<h2>2. 서버 시스템 구성 (NVIDIA GB200 NVL72)</h2>
+<p>액체 냉각 인프라 배관과 72개의 Blackwell GPU가 캐비닛 하나로 통합된 <strong>NVIDIA GB200 NVL72</strong>의 모습입니다.</p>
+
+<p><img src="./.vitepress/public/gb200-rack.jpg" alt="NVIDIA Blackwell GB200 NVL72 Rack" style="max-width: 100%; border-radius: 12px; margin: 20px 0; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);" /></p>
+
+<hr>
+
+<h2>3. 하드웨어 Teardown 및 시스템 아키텍처</h2>
+
+<p>GB200 NVL72 랙 캐비닛 전체를 물리적 수준으로 분해(Teardown)하여 분석한 결과입니다. 랙 하나가 약 120kW의 전력을 소비하므로, 부품의 구성도 극도로 고밀도화되어 있습니다.</p>
+
+<pre><code class="language-">+-------------------------------------------------------------------+
+<table><thead><tr>
+<th>GB200 NVL72 랙 캐비닛 내부 레이아웃</th>
+</tr></thead><tbody>
+<tr>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>Blackwell Compute Trays (컴퓨트 슬롯 x18)</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>- 각 트레이당 2개의 GB200 슈퍼칩 탑재</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>- 구리 워터블록 (Cold Plate) 칩 밀착 접착</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>NVLink Switch Trays (네트워크 스위치 x9)</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>- 전용 NVSwitch 칩셋 내장, 72개 GPU 풀메시 통신 지원</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+</tr>
+<tr>
+<td>[ 중앙 세로 매니폴드 ] --&gt; 액체 입수/출수용 매니폴드 구리 배관</td>
+</tr>
+<tr>
+<td></td>
+</tr>
+<tr>
+<td>[ 전원 분배 (Power Shelf) ] --&gt; 중앙 구리 버스바 (Busbar) 공급</td>
+</tr>
+<tr>
+<td>- 6x 33kW 랙 전원 공급 모듈 (5.5kW/8kW 파워팩 수십 개 장착)</td>
+</tr>
+</tbody></table>
+<p>+-------------------------------------------------------------------+</p>
+<p></code></pre></p>
+
+<h3>① GB200 컴퓨트 트레이 (Compute Tray)</h3>
+<ul>
+<li><strong>구성:</strong> 단일 슬롯 형태의 트레이에 2개의 GB200 슈퍼칩(Grace CPU 2개, Blackwell GPU 4개)이 실장되어 있습니다.</li>
+<li><strong>냉각 방식:</strong> 냉각 팬이 없으며, 대신 각 칩 다이 위를 덮고 있는 구리 <strong>콜드 플레이트(Cold Plate)</strong> 내부에 흐르는 냉각수가 열을 상시 수거합니다.</li>
+</ul>
+
+<h3>② NVLink 스위치 트레이 (Switch Tray)</h3>
+<ul>
+<li><strong>구성:</strong> 컴퓨트 트레이 사이사이에 분산 배치되며, 랙당 총 9개의 스위치 트레이가 삽입됩니다.</li>
+<li><strong>기능:</strong> 각 트레이에는 5세대 NVLink 칩셋(NVSwitch 4)이 탑재되어, 72개의 GPU가 단일 가상 GPU(1.8TB/s 바이디렉션 속도)인 것처럼 묶여서 데이터를 주고받을 수 있게 백본 스위치 허브 역할을 합니다.</li>
+</ul>
+
+<h3>③ 전력 분배 파워 셸프 (Power Shelf)</h3>
+<ul>
+<li><strong>구조:</strong> 랙 중앙 후면에는 <strong>버스바(Busbar)</strong>라고 불리는 두꺼운 수직 구리 막대 레일이 흐릅니다. 380V 직류 전기를 파워 셸프에서 컴퓨트 및 스위치 트레이로 도선 케이블 없이 슬롯형 접촉 방식으로 상시 전원 공급합니다.</li>
+<li><strong>PSU 모듈:</strong> 랙당 약 3개 그룹의 파워 셸프가 위치하며, 5.5kW 또는 8kW 초고효율 파워 서플라이 장치가 밀집 장착되어 120kW의 전체 랙 전력을 안전하게 정류합니다.</li>
+</ul>
+
+<h3>④ 액체 냉각 배관 (Manifold & QD)</h3>
+<ul>
+<li><strong>냉각 매니폴드:</strong> 랙 후면 우측 또는 중앙에 위치한 한 쌍의 세로 방향 대형 구리 배관 기둥으로, 차가운 물을 위에서 아래로 주입하고 뜨거운 물을 모아 하단으로 환수시킵니다.</li>
+<li><strong>퀵 커넥터 (Quick Disconnect):</strong> 컴퓨트 슬롯에 냉각 배관을 원터치로 체결하는 접촉구로, 물 한 방울 흘리지 않고 압력을 보존한 채로 랙 유지보수(핫스왑)가 가능하게 만듭니다.</li>
+</ul>
+
+<hr>
+
+<h2>4. Blackwell 핵심 밸류체인 및 부품 명세</h2>
+
+<p>Blackwell 인프라 구성 시 도입되는 하드웨어 부품별 공급 주체 정보입니다.</p>
+
+<table><thead><tr>
+<th>부품 영역</th>
+<th>핵심 구성품</th>
+<th>대표 제조/공급 밸류체인</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>반도체 생산</strong></td>
+<td>GPU 및 NVSwitch 칩 생산</td>
+<td><strong>TSMC</strong> (대만)</td>
+</tr>
+<tr>
+<td><strong>Advanced Packaging</strong></td>
+<td>CoWoS-L 패키징 통합</td>
+<td><strong>TSMC</strong> (대만)</td>
+</tr>
+<tr>
+<td><strong>메모리 공급</strong></td>
+<td>8-Hi HBM3e 적층 칩</td>
+<td><strong>SK하이닉스</strong> (주력), <strong>삼성전자</strong>, <strong>Micron</strong></td>
+</tr>
+<tr>
+<td><strong>냉각 CDU</strong></td>
+<td>열교환 및 냉각수 온도 제어 시스템</td>
+<td><strong>Vertiv</strong> (미국), <strong>nVent</strong> (미국)</td>
+</tr>
+<tr>
+<td><strong>매니폴드 배관</strong></td>
+<td>랙 내부 분배 배관 매니폴드</td>
+<td><strong>Nidec</strong> (일본), <strong>Volex</strong> (영국)</td>
+</tr>
+<tr>
+<td><strong>콜드 플레이트</strong></td>
+<td>구리 워터블록 히트싱크</td>
+<td><strong>Auras</strong> (대만), <strong>Boyd</strong> (미국), <strong>Cooler Master</strong> (대만)</td>
+</tr>
+<tr>
+<td><strong>퀵 커넥터 (QD)</strong></td>
+<td>무누수 커플러 금속 퀵 커넥터</td>
+<td><strong>Parker Hannifin</strong> (미국), <strong>Staubli</strong> (스위스)</td>
+</tr>
+<tr>
+<td><strong>초고다층 PCB</strong></td>
+<td>UBB, 스위치보드, 호스트보드</td>
+<td><strong>이수페타시스</strong> (국내), <strong>Gold Circuit</strong> (대만)</td>
+</tr>
+<tr>
+<td><strong>전력 모듈 (PSU)</strong></td>
+<td>5.5kW / 8kW 고전압 정류기</td>
+<td><strong>Delta Electronics</strong> (대만), <strong>Lite-On</strong> (대만)</td>
+</tr>
+<tr>
+<td><strong>버스바 / PDU</strong></td>
+<td>랙 백플레인 구리 전력 공급선</td>
+<td><strong>Volex</strong> (영국)</td>
+</tr>
+</tbody></table>
+
+    </article>
+  </main>
+
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'default' });
+  </script>
+</body>
+</html>
