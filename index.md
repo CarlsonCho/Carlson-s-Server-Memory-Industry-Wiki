@@ -10,6 +10,9 @@ hero:
     - theme: brand
       text: "⚙️ General Server Overview"
       link: /general-server-overview
+    - theme: brand
+      text: "💾 Memory Overview"
+      link: /memory-overview
 ---
 
 <div class="wiki-container">
